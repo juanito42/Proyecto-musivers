@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Añadir Respuesta al Foro: {{ forum.title }}</h1>
+
+        {{ form_start(form) }}
+            {{ form_row(form.content) }} {# Renderiza el campo de texto para la respuesta #}
+            <button type="submit" class="btn btn-primary mt-3">Añadir Respuesta</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Servicio de la base de datos (PostgreSQL)
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: juanito
+      POSTGRES_PASSWORD: c0c0lunA
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # Servicio del backend (Symfony + PHP)
+  backend:
+    build:
+      context: ./musivers-backend  # Actualización de la ruta
+      dockerfile: Dockerfile
+    container_name: musivers-backend
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    volumes:
+      - ./musivers-backend:/var/www/html  # Actualización de la ruta
+    environment:
+      DATABASE_URL: "pgsql://juanito:c0c0lunA@db:5432/app"
+
+  # Servicio del frontend (React)
+  frontend:
+    build:
+      context: ./musivers-frontend  # Actualización de la ruta
+    container_name: musivers-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./musivers-frontend:/app  # Actualización de la ruta
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:

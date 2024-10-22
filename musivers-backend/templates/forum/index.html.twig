@@ -1,0 +1,35 @@
+{# templates/forum/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Lista de Foros</h1>
+
+        <div class="row">
+            {% for forum in forums %}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ forum.title }}</h5>
+                <p class="card-text">{{ forum.description }}</p>
+                
+                {# Botón para agregar una nueva respuesta #}
+                <a href="{{ path('add_response', { id: forum.id }) }}" class="btn btn-primary">Añadir Respuesta</a>
+                
+                {# Formulario para eliminar el foro #}
+                <form action="{{ path('delete_forum', {id: forum.id}) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este foro?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete' ~ forum.id) }}">
+                    <button type="submit" class="btn btn-danger mt-2">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="col-12">
+        <p class="text-center">No hay foros disponibles en este momento.</p>
+    </div>
+{% endfor %}
+        </div>
+    </div>
+{% endblock %}

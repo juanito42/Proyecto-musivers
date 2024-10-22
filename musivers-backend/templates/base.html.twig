@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bienvenido{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: black;
+            display: flex;
+            flex-direction: column;  /* Estructura de columna para Flexbox */
+            min-height: 100vh;  /* Asegura que el body ocupe toda la altura de la pantalla */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            flex: 1;  /* Este contenedor tomará todo el espacio restante, empujando el footer hacia abajo */
+        }
+
+        h1 {
+            color: white; 
+        }
+
+        .navbar {
+            background-color: #3f3557;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: 500;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffdd59;
+        }
+
+        .footer {
+            background-color: #3f3557;
+            color: white;
+        }
+
+        .footer span {
+            color: #ffdd59;
+        }
+
+        .btn-primary {
+            background-color: #4a69bd;
+            border-color: #4a69bd;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffdd59;
+            border-color: #ffdd59;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+            }
+            .navbar-brand {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Musivers</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/events">Eventos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/events/new">Crea Eventos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/forums">Foros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users">Usuarios</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <div class="container mt-5">
+        {% block body %}
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {{ block('content') }}
+        
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span>&copy; 2024 Musivers.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

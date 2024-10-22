@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Editar Evento</h1>
+
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.date) }}
+                {{ form_widget(form.date, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.url) }}
+                {{ form_widget(form.url, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.photo, 'Foto del Evento') }}
+                {{ form_widget(form.photo, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary mt-3">Actualizar Evento</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

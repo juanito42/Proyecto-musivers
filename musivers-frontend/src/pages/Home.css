@@ -1,0 +1,32 @@
+/* Estilo para el contenedor principal */
+.home {
+    position: relative;
+    min-height: 100vh; /* Ocupar toda la altura de la pantalla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Asegura que el video no se desborde */
+}
+
+/* El video de fondo */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que el video cubra toda el área */
+    z-index: -1; /* Coloca el video detrás del contenido */
+    opacity: 0.7; /* Añade transparencia para que el texto sea más visible */
+}
+
+/* Contenido */
+.content {
+    z-index: 1; /* Coloca el contenido sobre el video */
+    color: white; /* Texto blanco para mayor contraste */
+}
+
+/* Opcional: Ajustes adicionales */
+.home .btn {
+    z-index: 2;
+}

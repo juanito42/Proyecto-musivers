@@ -1,0 +1,105 @@
+homepage:
+    path: /
+    controller: App\Controller\HomeController::index
+
+# Ruta para la API de eventos (JSON response)
+api_events:
+    path: /api/events
+    controller: App\Controller\AdminEventController::listEventsApi
+    methods: [GET]
+
+# Ruta para la creación de eventos desde el backend (Admin)
+admin_create_event:
+    path: /admin/events/new
+    controller: App\Controller\AdminEventController::createEvent
+    methods: [GET, POST]
+
+# Ruta para editar un evento
+admin_edit_event:
+    path: /admin/events/edit/{id}
+    controller: App\Controller\AdminEventController::editEvent
+    methods: [GET, POST]
+
+# Ruta para ver los detalles de un evento específico (usando AdminEventController ahora)
+event_detail:
+    path: /events/{id}
+    controller: App\Controller\AdminEventController::showEvent
+    methods: [GET]
+
+# Ruta para listar eventos desde el backend (renderiza Twig, no JSON)
+event_list:
+    path: /events
+    controller: App\Controller\AdminEventController::listEvents
+    methods: [GET]
+
+# Ruta para eliminar un evento (Admin)
+event_delete:
+    path: /admin/events/delete/{id}
+    controller: App\Controller\AdminEventController::deleteEvent
+    methods: [POST]
+
+# Rutas para foros
+
+# Ruta para la API de foros
+api_forums:
+    path: /api/forums
+    controller: App\Controller\ForumController::getForums
+    methods: [GET]
+
+# Ruta para listar los foros (vista con Twig)
+forums_list:
+    path: /forums
+    controller: App\Controller\ForumController::index
+    methods: [GET]
+
+# Ruta para la creación de foros
+create_forum:
+    path: /forums/new
+    controller: App\Controller\ForumController::createForum
+    methods: [POST]
+
+# Ruta para editar un foro
+edit_forum:
+    path: /forums/edit/{id}
+    controller: App\Controller\ForumController::editForum
+    methods: [GET, POST]
+
+# Ruta para eliminar un foro
+delete_forum:
+    path: /forums/{id}
+    controller: App\Controller\ForumController::deleteForum
+    methods: [DELETE]
+
+# Ruta para añadir una respuesta a un foro
+add_response:
+    path: /forums/{id}/add-response
+    controller: App\Controller\ForumController::addResponse
+    methods: [GET, POST]
+
+# Ruta para añadir una subrespuesta a una respuesta existente
+add_sub_response:
+    path: /forums/{forumId}/response/{responseId}/subresponse
+    controller: App\Controller\ForumController::addSubResponse
+    methods: [POST]
+
+# Ruta para login usando JWT
+login:
+    path: /api/login
+    controller: lexik_jwt_authentication.controller.login
+    methods: [POST]
+
+# Ruta para registrar usuarios
+register:
+    path: /api/register
+    controller: App\Controller\RegistrationController::register
+    methods: [POST]
+
+# Ruta para listar usuarios
+users_list:
+    path: /users
+    controller: App\Controller\UserController::index
+    methods: [GET]
+
+uploads:
+    path: /uploads/photos
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect

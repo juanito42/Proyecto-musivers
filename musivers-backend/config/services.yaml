@@ -1,0 +1,40 @@
+parameters:
+    photos_directory: '%kernel.project_dir%/public/uploads/photos'
+
+services:
+    # Configuración por defecto para los servicios en *este* archivo
+    _defaults:   # Aquí el guion bajo es importante.
+        autowire: true
+        autoconfigure: true
+        public: false      # Los servicios no son accesibles desde el contenedor público a menos que se indique.
+
+    # Hace que las clases en src/ estén disponibles como servicios
+    # Esto crea un servicio por cada clase cuyo ID es el nombre completo de la clase
+    App\:
+        resource: '../src/'      # Incluye todo el directorio src/
+        exclude:
+            - '../src/DependencyInjection/'  # Excluye la carpeta DependencyInjection
+            - '../src/Entity/'               # Excluye las entidades
+            - '../src/Kernel.php'            # Excluye el archivo Kernel.php
+
+    # Configurar manualmente los controladores si es necesario
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    annotation_reader:
+        class: Doctrine\Common\Annotations\AnnotationReader
+
+    # Definir más servicios aquí si necesitas una configuración explícita
+    # Ten en cuenta que las últimas definiciones siempre reemplazan las anteriores
+
+    # Ejemplo de un servicio explícito:
+    # App\Service\MyService:
+    #     arguments:
+    #         $myParameter: '%kernel.project_dir%'
+
+    app.some_abstract_service:
+        abstract: true
+        class: 'App\SomeAbstractClass'
+
+    
