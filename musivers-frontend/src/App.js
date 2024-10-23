@@ -11,30 +11,30 @@ import Users from './pages/Users';
 import Profile from './pages/Profile'; 
 import AuthForm from './components/AuthForm'; 
 import RegisterForm from './components/RegisterForm';
-import CategoryPage from './pages/CategoryPage'; // Importar el nuevo componente de categoría
-import CreateEventForm from './components/CreateEventForm'; // Importar el componente de creación de eventos
+import CategoryPage from './pages/CategoryPage'; 
+import CreateEventForm from './components/CreateEventForm'; 
 
 function App() {
   return (
-    <Router>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/events/new" element={<CreateEventForm />} /> {/* Ruta para crear eventos */}
-        <Route path="/map" element={<Map />} />
-        <Route path="/forums" element={<Forums />} />
-        <Route path="/forums/new" element={<CreateForum />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/auth" element={<AuthForm />} />
-        
-        {/* Ruta dinámica para las categorías */}
-        <Route path="/category/:category" element={<CategoryPage />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <div style={{ backgroundColor: 'black', minHeight: '100vh', color: 'white' }}>
+      <Router>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/new" element={<CreateEventForm />} />
+          <Route path="/map" element={<Map />} />
+          <Route path="/forums" element={<Forums />} />
+          <Route path="/forums/new" element={<CreateForum />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/auth" element={<AuthForm />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </div>
   );
 }
 

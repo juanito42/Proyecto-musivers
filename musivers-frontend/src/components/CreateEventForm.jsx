@@ -78,31 +78,35 @@ const CreateEventForm = () => {
   };
 
   const handleCreateEvent = async (e) => {
-  e.preventDefault();
-  const token = localStorage.getItem('token');
-  const formData = new FormData();
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
 
-  formData.append('title', eventData.title);
-  formData.append('description', eventData.description);
-  formData.append('date', eventData.date);
-  formData.append('category', eventData.category);
-  formData.append('url', eventData.url);
-  formData.append('photo', eventData.photo);
+    // Asegurarse de que todos los datos estén presentes
+    formData.append('title', eventData.title);
+    formData.append('description', eventData.description);
+    formData.append('date', eventData.date);
+    formData.append('category', eventData.category);
+    formData.append('url', eventData.url);
+    formData.append('photo', eventData.photo); // Solo se añade si hay una foto seleccionada
 
-  try {
-    await axios.post('http://localhost:8000/admin/events/new', formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    alert('Evento creado con éxito');
-    navigate('/events');
-  } catch (error) {
-    console.error('Error creando el evento:', error.response ? error.response.data : error.message);
-    alert('Error creando el evento. Revisa los campos.');
-  }
+    try {
+        const response = await axios.post('http://localhost:8000/admin/events/new', formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        alert('Evento creado con éxito');
+        navigate('/events');
+    } catch (error) {
+        // Mostrar el mensaje de error de la respuesta si existe
+        console.error('Error creando el evento:', error.response ? error.response.data : error.message);
+        alert(`Error creando el evento: ${error.response ? error.response.data.error : error.message}`);
+    }
 };
+
 
   return (
     <Container className="mt-5">

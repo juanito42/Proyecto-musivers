@@ -85,7 +85,11 @@ const NavBar = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="py-0">
       <Container>
-        <Navbar.Brand as={Link} to="/" className="p-0 d-flex align-items-center">
+        <Navbar.Brand
+          as={Link}
+          to="/"
+          className="p-0 d-flex align-items-center"
+        >
           <img
             src="/images/musivers-logo.webp"
             alt="Musivers logo"

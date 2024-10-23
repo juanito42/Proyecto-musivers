@@ -47,8 +47,8 @@ const EventsPage = () => {
       <h1 className="mt-5">Eventos</h1>
       <div className="row">
         {events.map((event, index) => (
-          <div className="col-md-4" key={event.id || index}>
-            <div className="card mb-4 shadow-sm" style={{ height: "100%" }}>
+          <div className="col-md-6 col-lg-3 mb-4" key={event.id || index}> {/* 4 columnas por fila en pantallas grandes */}
+            <div className="card h-100 shadow-sm">
               <div className="card-img-container">
                 {event.photoFilename ? (
                   <img

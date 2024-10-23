@@ -4,6 +4,15 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4 text-primary">Crear un Nuevo Evento</h1>
 
+        {% for label, messages in app.flashes %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow-lg border-0">
@@ -92,14 +101,7 @@
                                         'class': 'form-control'
                                     }
                                 }) }}
-                                <div class="invalid-feedback">
-                                    Por favor, sube una foto para el evento (opcional).
-                                </div>
                             </div>
-
-                            <!-- Botón de envío -->
-                            <button type="submit" class="btn btn-primary w-100">Crear Evento</button>
-                            
                         {{ form_end(form) }}
                     </div>
                 </div>
