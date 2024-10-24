@@ -70,6 +70,11 @@ delete_forum:
     controller: App\Controller\ForumController::deleteForum
     methods: [DELETE]
 
+forum_responses:
+    path: /api/forums/{id}/responses
+    controller: App\Controller\ForumController::getResponses
+    methods: [GET]
+
 # Ruta para añadir una respuesta a un foro
 add_response:
     path: /forums/{id}/add-response
