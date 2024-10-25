@@ -82,31 +82,31 @@ const CreateEventForm = () => {
     const token = localStorage.getItem('token');
     const formData = new FormData();
 
-    // Asegurarse de que todos los datos estén presentes
+    // Agrega los datos al FormData
     formData.append('title', eventData.title);
     formData.append('description', eventData.description);
     formData.append('date', eventData.date);
     formData.append('category', eventData.category);
     formData.append('url', eventData.url);
-    formData.append('photo', eventData.photo); // Solo se añade si hay una foto seleccionada
+    if (eventData.photo) formData.append('photo', eventData.photo); // Agrega solo si hay una foto seleccionada
 
     try {
-        const response = await axios.post('http://localhost:8000/admin/events/new', formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+      // Asegúrate de que la URL corresponde con la ruta de creación de eventos de tu API
+      await axios.post('http://localhost:8000/api/admin/events/new', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-        alert('Evento creado con éxito');
-        navigate('/events');
+      alert('Evento creado con éxito');
+      navigate('/events');
     } catch (error) {
-        // Mostrar el mensaje de error de la respuesta si existe
-        console.error('Error creando el evento:', error.response ? error.response.data : error.message);
-        alert(`Error creando el evento: ${error.response ? error.response.data.error : error.message}`);
+      // Manejo de errores de la respuesta
+      console.error('Error creando el evento:', error.response ? error.response.data : error.message);
+      alert(`Error creando el evento: ${error.response ? error.response.data.error : error.message}`);
     }
-};
-
+  };
 
   return (
     <Container className="mt-5">
@@ -203,7 +203,6 @@ const CreateEventForm = () => {
                     name="photo"
                     onChange={handleFileChange}
                     className="bg-dark text-white"
-                    required
                   />
                 </Form.Group>
 

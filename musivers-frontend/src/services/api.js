@@ -2,7 +2,16 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // Asegúrate de que el puerto y la URL sean correctos
+  baseURL: 'http://localhost:8000', // Verifica que el puerto y URL sean correctos
+});
+
+// Configuración del token de autenticación en cada solicitud
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // Llamada API para el registro de usuario
@@ -17,7 +26,7 @@ export const getEvents = () => api.get('/api/events');
 // Función para crear un nuevo evento
 export const createEvent = async (newEvent) => {
   try {
-    const response = await api.post('/admin/events/new', newEvent);  // Usar la ruta correcta
+    const response = await api.post('/api/admin/events/new', newEvent);  // Asegúrate de usar la ruta correcta
     console.log('Evento creado:', response.data);
     return response.data; // Devuelve los datos del evento si necesitas manejar la respuesta en otro lado
   } catch (error) {
@@ -29,20 +38,22 @@ export const createEvent = async (newEvent) => {
 // Función para crear un nuevo foro
 export const createForum = async (newForum) => {
   try {
-    const response = await api.post('/forums/new', newForum);  // Usar la ruta correcta
+    const response = await api.post('/api/forums/new', newForum);  // Usar la ruta correcta y verificar que exista en el backend
     console.log('Foro creado:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error creando el foro:', error);
+    throw error;
   }
 };
 
 // Petición para obtener eventos filtrados por categoría
 export const getEventsByCategory = async (category) => {
   try {
-    const response = await api.get(`/api/events?category=${category}`);  // Pasar la categoría como parámetro de consulta
+    const response = await api.get(`/api/events?category=${category}`);
     return response.data;
   } catch (error) {
     console.error('Error obteniendo eventos por categoría:', error);
+    throw error;
   }
 };

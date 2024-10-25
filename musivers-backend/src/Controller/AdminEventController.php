@@ -23,8 +23,7 @@ class AdminEventController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
     // Método para listar eventos filtrados por categoría en formato JSON para la API
     #[Route('/api/events', name: 'api_events', methods: ['GET'])]
@@ -94,67 +93,61 @@ class AdminEventController extends AbstractController
     }
 
     // Método para crear un nuevo evento
-    #[Route('/admin/events/new', name: 'admin_create_event', methods: ['GET', 'POST'])]
-    public function createEvent(Request $request): Response
-    {
-        $event = new Event();
+// Método para crear un nuevo evento (para el servidor y JSON)
+#[Route('/admin/events/new', name: 'admin_create_event', methods: ['GET', 'POST'])]
+public function createEvent(Request $request): Response
+{
+    $event = new Event();
 
-        // Crear el formulario
-        $form = $this->createFormBuilder($event)
-            ->add('title', TextType::class, ['label' => 'Título del Evento', 'required' => true])
-            ->add('description', TextareaType::class, ['label' => 'Descripción del Evento', 'required' => true])
-            ->add('date', DateTimeType::class, ['label' => 'Fecha del Evento', 'required' => true])
-            ->add('category', ChoiceType::class, [
-                'label' => 'Categoría',
-                'choices' => $this->getCategories(),  // Llamada a las categorías
-                'required' => true
-            ])
-            ->add('url', UrlType::class, ['label' => 'Enlace del Evento', 'required' => false])
-            ->add('photo', FileType::class, [
-                'label' => 'Foto del Evento',
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Crear Evento'])
-            ->getForm();
+    // Crear el formulario
+    $form = $this->createFormBuilder($event)
+        ->add('title', TextType::class, ['label' => 'Título del Evento', 'required' => true])
+        ->add('description', TextareaType::class, ['label' => 'Descripción', 'required' => true])
+        ->add('date', DateTimeType::class, ['label' => 'Fecha del Evento', 'required' => true])
+        ->add('category', ChoiceType::class, [
+            'label' => 'Categoría',
+            'choices' => $this->getCategories(),
+            'required' => true
+        ])
+        ->add('url', UrlType::class, ['label' => 'Enlace', 'required' => false])
+        ->add('photo', FileType::class, [
+            'label' => 'Foto del Evento',
+            'mapped' => false,
+            'required' => false,
+        ])
+        ->getForm();
 
-        // Procesar el formulario
-        $form->handleRequest($request);
+    $form->handleRequest($request);
 
-        // Verificar si el formulario ha sido enviado y es válido
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Manejar la subida de la foto
-            /** @var UploadedFile $photoFile */
-            $photoFile = $form->get('photo')->getData();
-            if ($photoFile instanceof UploadedFile) {
-                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
-
-                try {
-                    $photoFile->move(
-                        $this->getParameter('photos_directory'),
-                        $newFilename
-                    );
-                    $event->setPhotoFilename($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Error al subir la imagen');
-                }
+    // Validar el formulario y manejar el envío
+    if ($form->isSubmitted() && $form->isValid()) {
+        $photoFile = $form->get('photo')->getData();
+        if ($photoFile) {
+            $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+            try {
+                $photoFile->move(
+                    $this->getParameter('photos_directory'),
+                    $newFilename
+                );
+                $event->setPhotoFilename($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Error al subir la imagen');
             }
-
-            // Persistir el evento en la base de datos
-            $this->entityManager->persist($event);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Evento creado con éxito');
-
-            return $this->redirectToRoute('event_list');
         }
 
-        // Renderizar la vista del formulario
-        return $this->render('event/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        // Guardar el evento
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Evento creado exitosamente');
+        return $this->redirectToRoute('event_list');
     }
-    
+
+    return $this->render('event/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
 
     // Método para editar un evento
     #[Route('/admin/events/edit/{id}', name: 'admin_edit_event', methods: ['GET', 'POST'])]
@@ -233,4 +226,89 @@ class AdminEventController extends AbstractController
             'events' => $events,
         ]);
     }
+
+    // Método para renderizar el formulario de creación de eventos en HTML (servidor)
+    #[Route('/admin/events/new', name: 'admin_create_event_form', methods: ['GET'])]
+    public function createEventForm(Request $request): Response
+    {
+        $event = new Event();
+
+        // Crear el formulario
+        $form = $this->createFormBuilder($event)
+            ->add('title', TextType::class, ['label' => 'Título del Evento', 'required' => true])
+            ->add('description', TextareaType::class, ['label' => 'Descripción del Evento', 'required' => true])
+            ->add('date', DateTimeType::class, ['label' => 'Fecha del Evento', 'required' => true])
+            ->add('category', ChoiceType::class, [
+                'label' => 'Categoría',
+                'choices' => $this->getCategories(), // Llamada a las categorías
+                'required' => true,
+            ])
+            ->add('url', UrlType::class, ['label' => 'Enlace del Evento', 'required' => false])
+            ->add('photo', FileType::class, [
+                'label' => 'Foto del Evento',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Crear Evento'])
+            ->getForm();
+
+        // Renderizar el formulario
+        return $this->render('event/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    // Método para manejar la solicitud JSON de creación de eventos desde el cliente
+    #[Route('/api/admin/events/new', name: 'admin_create_event_api', methods: ['POST'])]
+    public function createEventApi(Request $request): JsonResponse
+    {
+        $event = new Event();
+
+        // Obtener los datos del request manualmente si es un envío multipart
+        $title = $request->get('title');
+        $description = $request->get('description');
+        $date = $request->get('date');
+        $category = $request->get('category');
+        $url = $request->get('url');
+
+        // Configurar los datos en la entidad Event
+        if (!$title || !$description || !$date || !$category) {
+            return new JsonResponse(['error' => 'Todos los campos son obligatorios.'], 400);
+        }
+
+        $event->setTitle($title);
+        $event->setDescription($description);
+        $event->setDate(new \DateTime($date));
+        $event->setCategory($category);
+        $event->setUrl($url);
+
+        // Manejo del archivo (si se subió una foto)
+        /** @var UploadedFile $photoFile */
+        $photoFile = $request->files->get('photo');
+        if ($photoFile instanceof UploadedFile) {
+            $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+
+            try {
+                $photoFile->move(
+                    $this->getParameter('photos_directory'),
+                    $newFilename
+                );
+                $event->setPhotoFilename($newFilename);
+            } catch (FileException $e) {
+                return new JsonResponse(['error' => 'Error al subir la imagen.'], 500);
+            }
+        }
+
+        // Persistir el evento en la base de datos
+        try {
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Error al guardar el evento en la base de datos.'], 500);
+        }
+
+        return new JsonResponse(['message' => 'Evento creado correctamente'], 200);
+    }
+
+    
 }

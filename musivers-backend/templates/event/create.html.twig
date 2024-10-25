@@ -20,7 +20,15 @@
                         <h3 class="mb-0">Formulario de Evento</h3>
                     </div>
                     <div class="card-body p-5">
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        {{ form_start(form, {
+                            'attr': {
+                                'class': 'needs-validation',
+                                'novalidate': 'novalidate',
+                                'enctype': 'multipart/form-data'
+                            },
+                            'action': path('admin_create_event'),
+                            'method': 'POST'
+                        }) }}
 
                             <!-- Campo Título -->
                             <div class="mb-3">
@@ -28,8 +36,7 @@
                                 {{ form_widget(form.title, {
                                     'attr': {
                                         'class': 'form-control',
-                                        'placeholder': 'Escribe el título del evento',
-                                        'required': 'required'
+                                        'placeholder': 'Escribe el título del evento'
                                     }
                                 }) }}
                                 <div class="invalid-feedback">
@@ -43,8 +50,7 @@
                                 {{ form_widget(form.description, {
                                     'attr': {
                                         'class': 'form-control',
-                                        'placeholder': 'Escribe una descripción detallada',
-                                        'required': 'required'
+                                        'placeholder': 'Escribe una descripción detallada'
                                     }
                                 }) }}
                                 <div class="invalid-feedback">
@@ -58,8 +64,7 @@
                                 {{ form_widget(form.date, {
                                     'attr': {
                                         'class': 'form-control',
-                                        'placeholder': 'Selecciona la fecha del evento',
-                                        'required': 'required'
+                                        'placeholder': 'Selecciona la fecha del evento'
                                     }
                                 }) }}
                                 <div class="invalid-feedback">
@@ -73,8 +78,7 @@
                                 {{ form_widget(form.category, {
                                     'attr': {
                                         'class': 'form-control',
-                                        'placeholder': 'Selecciona la categoría del evento',
-                                        'required': 'required'
+                                        'placeholder': 'Selecciona la categoría del evento'
                                     }
                                 }) }}
                                 <div class="invalid-feedback">
@@ -102,6 +106,12 @@
                                     }
                                 }) }}
                             </div>
+
+                            <!-- Botón para crear el evento -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Crear Evento</button>
+                            </div>
+
                         {{ form_end(form) }}
                     </div>
                 </div>

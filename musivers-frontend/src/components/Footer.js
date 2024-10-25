@@ -77,7 +77,7 @@ function Footer() {
         <i className="fab fa-whatsapp"></i>
       </a>
 
-      <style jsx>{`
+      <style>{`
         .whatsapp-button {
           position: fixed;
           width: 60px;

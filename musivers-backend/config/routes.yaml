@@ -108,3 +108,14 @@ users_list:
 uploads:
     path: /uploads/photos
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect
+
+
+admin_create_event_form:
+    path: /admin/events/new
+    controller: App\Controller\AdminEventController::createEventForm
+    methods: [GET]
+
+admin_create_event_api:
+    path: /api/admin/events/new
+    controller: App\Controller\AdminEventController::createEventApi
+    methods: [POST]
