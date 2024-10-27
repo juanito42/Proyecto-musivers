@@ -27,49 +27,64 @@ const CategoryPage = () => {
     } finally {
         setLoading(false); // Deja de mostrar el cargando cuando la petición termina
     }
-}, [category]);
+  }, [category]);
 
   useEffect(() => {
     fetchEventsByCategory();
   }, [fetchEventsByCategory]);
 
   if (loading) {
-    return <div className="text-center">Cargando eventos...</div>;
+    return <div className="container mt-5 text-center">Cargando eventos...</div>;
   }
 
   return (
     <div className="container">
-      <h1 className="mt-5" style={{textAlign: "center"}}>{category}</h1>
+      <h1 className="mt-5 text-center">{category}</h1>
       <div className="row">
         {events.length === 0 ? (
           <p>No hay eventos disponibles para esta categoría</p>
         ) : (
           events.map((event, index) => (
-            <div className="col-md-4" key={event.id || index}>
-              <div className="card mb-4 shadow-sm">
-                {event.photoFilename ? (
-                  <img
-                    src={`http://localhost:8000/uploads/photos/${event.photoFilename}`}
-                    className="card-img-top img-fluid"
-                    alt={event.title}
-                    style={{ objectFit: 'cover', height: '200px', width: '100%' }}
-                  />
-                ) : (
-                  <img
-                    src="http://localhost:8000/uploads/photos/default-event.jpg"
-                    className="card-img-top img-fluid"
-                    alt="Evento sin foto"
-                    style={{ objectFit: 'cover', height: '200px', width: '100%' }}
-                  />
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{event.title || 'Título no disponible'}</h5>
-                  <p className="card-text">{event.description || 'Descripción no disponible'}</p>
-                  <p className="card-text">
+            <div className="col-md-6 col-lg-3 mb-4" key={event.id || index}> {/* 4 columnas por fila en pantallas grandes */}
+              <div className="card h-100 shadow-sm">
+                <div className="card-img-container">
+                  {event.photoFilename ? (
+                    <img
+                      src={`http://localhost:8000/uploads/photos/${event.photoFilename}`}
+                      className="card-img-top img-fluid"
+                      alt={event.title}
+                      style={{ objectFit: "cover", height: "200px", width: "100%" }}
+                    />
+                  ) : (
+                    <img
+                      src="http://localhost:8000/uploads/photos/default-event.jpg"
+                      className="card-img-top img-fluid"
+                      alt="Evento sin foto"
+                      style={{ objectFit: "cover", height: "200px", width: "100%" }}
+                    />
+                  )}
+                </div>
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{event.title || "Título no disponible"}</h5>
+                  <p className="card-text">{event.description || "Descripción no disponible"}</p>
+                  <p className="card-text mt-auto">
                     <small>
-                      {event.date ? dayjs(event.date).format('YYYY-MM-DD HH:mm') : 'Fecha no disponible'}
+                      {event.date ? dayjs(event.date).format("YYYY-MM-DD HH:mm") : "Fecha no disponible"}
                     </small>
                   </p>
+
+                  {/* Mostrar la categoría del evento */}
+                  <p className="card-text">
+                    <strong>Categoría:</strong> {event.category || "Categoría no disponible"}
+                  </p>
+
+                  <div className="d-flex justify-content-between mt-2">
+                    {event.url && (
+                      <a href={event.url} target="_blank" rel="noopener noreferrer" className="btn btn-info">
+                        Más información
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

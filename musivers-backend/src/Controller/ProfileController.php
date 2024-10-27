@@ -1,33 +1,91 @@
 <?php
+
 // src/Controller/ProfileController.php
 namespace App\Controller;
 
 use App\Entity\Profile;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ProfileController extends AbstractController
 {
-    /**
-     * @Route("/api/profile", name="save_profile", methods={"POST"})
-     */
-    public function saveProfile(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        $user = $this->getUser();  // Obtener el usuario autenticado
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {
+    }
 
-        $profile = new Profile();
+    // src/Controller/ProfileController.php
+    #[Route('/api/profile', name: 'get_profile', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function getProfile(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $profile = $user->getProfile();
+
+        if (!$profile) {
+            return new JsonResponse(['error' => 'Perfil no encontrado'], 404);
+        }
+
+        return new JsonResponse([
+            'firstName' => $profile->getFirstName(),
+            'lastName' => $profile->getLastName(),
+            'bio' => $profile->getBio(),
+            'birthDate' => $profile->getBirthDate()?->format('Y-m-d'),
+        ]);
+    }
+
+    
+    #[Route('/api/profile', name: 'save_profile', methods: ['PUT'])]
+    #[IsGranted('ROLE_USER')]
+    public function saveProfile(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw new AccessDeniedException('Usuario no autenticado.');
+        }
+
+        // Obtener los datos enviados en la solicitud
+        $data = json_decode($request->getContent(), true);
+
+        // Validar los datos recibidos
+        if (!$data || !isset($data['firstName'], $data['lastName'])) {
+            return new JsonResponse(['error' => 'Datos inválidos'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        // Validar y asignar la fecha de nacimiento
+        $birthDate = null;
+        if (!empty($data['birthDate'])) {
+            try {
+                $birthDate = new \DateTime($data['birthDate']);
+            } catch (\Exception $e) {
+                return new JsonResponse(['error' => 'Fecha de nacimiento inválida'], JsonResponse::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // Obtener el perfil del usuario o crear uno nuevo si no existe
+        $profile = $user->getProfile() ?: new Profile();
         $profile->setFirstName($data['firstName']);
         $profile->setLastName($data['lastName']);
-        $profile->setBirthDate(new \DateTime($data['birthDate']));
-        $profile->setUser($user);
+        $profile->setBio($data['bio'] ?? null);
+        $profile->setBirthDate($birthDate);
 
-        $entityManager->persist($profile);
-        $entityManager->flush();
+        // Asignar el perfil al usuario si es nuevo
+        if (!$user->getProfile()) {
+            $user->setProfile($profile);
+        }
 
-        return new JsonResponse(['status' => 'Profile saved!'], JsonResponse::HTTP_CREATED);
+        // Persistir y guardar cambios siempre
+        $this->entityManager->persist($profile);
+        $this->entityManager->flush();
+
+        return new JsonResponse(['message' => 'Perfil actualizado correctamente.'], JsonResponse::HTTP_OK);
     }
 }

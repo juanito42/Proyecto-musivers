@@ -8,11 +8,13 @@ import Map from './pages/Map';
 import Forums from './pages/Forums';
 import CreateForum from './components/CreateForum';
 import Users from './pages/Users';
-import Profile from './pages/Profile'; 
+import Profile from './pages/Profile';
+import ProfileEdit from './pages/ProfileEdit'; 
 import AuthForm from './components/AuthForm'; 
 import RegisterForm from './components/RegisterForm';
 import CategoryPage from './pages/CategoryPage'; 
 import CreateEventForm from './components/CreateEventForm'; 
+import ProfileForm from './components/ProfileForm';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/users" element={<Users />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/profile_form" element={<ProfileForm />} />
           <Route path="/auth" element={<AuthForm />} />
           <Route path="/category/:category" element={<CategoryPage />} />
         </Routes>

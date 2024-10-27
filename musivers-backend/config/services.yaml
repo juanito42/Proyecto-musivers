@@ -23,8 +23,9 @@ services:
         tags: ['controller.service_arguments']
 
     annotation_reader:
-        class: Doctrine\Common\Annotations\AnnotationReader
-
+       class: Doctrine\Common\Annotations\AnnotationReader
+       public: false
+        
     # Definir más servicios aquí si necesitas una configuración explícita
     # Ten en cuenta que las últimas definiciones siempre reemplazan las anteriores
 

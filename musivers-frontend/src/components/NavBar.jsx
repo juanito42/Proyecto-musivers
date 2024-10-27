@@ -52,7 +52,7 @@ const NavBar = () => {
   const festivales = [
     "Festivales de Música Rock",
     "Festivales de Jazz",
-    "Festivales de musica Electrónica",
+    "Festivales de música Electrónica",
     "Festivales de Música Indie",
     "Festivales Remember",
     "Festivales de Ópera",

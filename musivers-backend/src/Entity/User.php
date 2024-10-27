@@ -1,9 +1,12 @@
 <?php
+// src/Entity/User.php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Entity\Profile;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -20,7 +23,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $password;
 
-    // Implementación de los métodos de las interfaces UserInterface y PasswordAuthenticatedUserInterface
+    #[ORM\OneToOne(targetEntity: Profile::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Profile $profile = null;
+
+    // Métodos de la interfaz UserInterface y PasswordAuthenticatedUserInterface
 
     public function getId(): ?int
     {
@@ -61,6 +67,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials()
     {
-        // limpiar datos sensibles si es necesario
+        // Limpiar datos sensibles si es necesario
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(Profile $profile): self
+    {
+        // Asegurar que la relación bidireccional esté configurada correctamente
+        if ($profile->getUser() !== $this) {
+            $profile->setUser($this);
+        }
+
+        $this->profile = $profile;
+
+        return $this;
     }
 }

@@ -109,7 +109,6 @@ uploads:
     path: /uploads/photos
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect
 
-
 admin_create_event_form:
     path: /admin/events/new
     controller: App\Controller\AdminEventController::createEventForm
@@ -119,3 +118,16 @@ admin_create_event_api:
     path: /api/admin/events/new
     controller: App\Controller\AdminEventController::createEventApi
     methods: [POST]
+
+
+# Ruta para obtener el perfil del usuario autenticado
+get_profile:
+    path: /api/profile
+    controller: App\Controller\ProfileController::getProfile
+    methods: [GET]
+
+save_profile:
+    path: /api/profile
+    controller: App\Controller\ProfileController::saveProfile
+    methods: [POST, PUT]
+

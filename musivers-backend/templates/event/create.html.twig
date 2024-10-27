@@ -22,11 +22,11 @@
                     <div class="card-body p-5">
                         {{ form_start(form, {
                             'attr': {
-                                'class': 'needs-validation',
-                                'novalidate': 'novalidate',
-                                'enctype': 'multipart/form-data'
+                            'class': 'needs-validation',
+                            'novalidate': 'novalidate',
+                            'enctype': 'multipart/form-data'
                             },
-                            'action': path('admin_create_event'),
+                            'action': path('admin_create_event_form'),
                             'method': 'POST'
                         }) }}
 
@@ -106,12 +106,6 @@
                                     }
                                 }) }}
                             </div>
-
-                            <!-- Botón para crear el evento -->
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Crear Evento</button>
-                            </div>
-
                         {{ form_end(form) }}
                     </div>
                 </div>

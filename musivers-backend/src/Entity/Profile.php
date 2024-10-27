@@ -1,9 +1,9 @@
 <?php
+// src/Entity/Profile.php
 
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: "App\Repository\ProfileRepository")]
 class Profile
@@ -27,9 +27,7 @@ class Profile
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'profile')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $user;
-
-    // Getters y setters
+    private ?User $user = null; // Cambiado a nullable
 
     public function getId(): ?int
     {
@@ -44,7 +42,6 @@ class Profile
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -56,7 +53,6 @@ class Profile
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -68,7 +64,6 @@ class Profile
     public function setBio(?string $bio): self
     {
         $this->bio = $bio;
-
         return $this;
     }
 
@@ -80,7 +75,6 @@ class Profile
     public function setBirthDate(?\DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
-
         return $this;
     }
 
@@ -89,10 +83,12 @@ class Profile
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
-
+        if ($user && $user->getProfile() !== $this) {
+            $user->setProfile($this);
+        }
         return $this;
     }
 }

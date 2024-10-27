@@ -69,7 +69,7 @@ function Footer() {
 
       {/* Ícono flotante de WhatsApp */}
       <a
-        href="https://api.whatsapp.com/send?phone=123456789"
+        href="https://api.whatsapp.com/send?phone=625356695"
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp-button btn btn-success rounded-circle shadow"
