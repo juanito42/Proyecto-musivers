@@ -58,33 +58,36 @@ create_forum:
     controller: App\Controller\ForumController::createForum
     methods: [POST]
 
-# Ruta para editar un foro
-edit_forum:
-    path: /forums/edit/{id}
-    controller: App\Controller\ForumController::editForum
-    methods: [GET, POST]
-
 # Ruta para eliminar un foro
 delete_forum:
     path: /forums/{id}
     controller: App\Controller\ForumController::deleteForum
     methods: [DELETE]
 
-forum_responses:
-    path: /api/forums/{id}/responses
-    controller: App\Controller\ForumController::getResponses
-    methods: [GET]
-
-# Ruta para añadir una respuesta a un foro
 add_response:
     path: /forums/{id}/add-response
     controller: App\Controller\ForumController::addResponse
     methods: [GET, POST]
 
-# Ruta para añadir una subrespuesta a una respuesta existente
+add_forum_response:
+    path: /forums/{id}/response
+    controller: App\Controller\ForumController::addResponseToForum
+    methods: [POST]
+
+forum_responses:
+    path: /api/forums/{id}/responses
+    controller: App\Controller\ForumController::getResponses
+    methods: [GET]
+
 add_sub_response:
     path: /forums/{forumId}/response/{responseId}/subresponse
     controller: App\Controller\ForumController::addSubResponse
+    methods: [POST]
+    
+    # Ruta para añadir sub-respuestas a una respuesta existente
+add_subresponse:
+    path: /forums/{id}/response/{responseId}/subresponse
+    controller: App\Controller\ForumController::addSubResponseToResponse
     methods: [POST]
 
 # Ruta para login usando JWT

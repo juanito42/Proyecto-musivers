@@ -21,8 +21,8 @@ class ForumController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/forums', name: 'api_forums', methods: ['GET'])]
-    public function getForums(): JsonResponse
+    #[Route('/api/forums', name: 'get_forums', methods: ['GET'])]
+        public function getForums(): JsonResponse
     {
         $forums = $this->entityManager->getRepository(Forum::class)->findAll();
 
@@ -35,7 +35,7 @@ class ForumController extends AbstractController
         return new JsonResponse($data);
     }
 
-    #[Route('/forums/new', name: 'create_forum', methods: ['POST'])]
+    #[Route('api/forums/new', name: 'create_forum', methods: ['POST'])]
     public function createForum(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
