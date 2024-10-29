@@ -26,6 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Profile::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $verificationToken = null;
+
+    
     // Métodos de la interfaz UserInterface y PasswordAuthenticatedUserInterface
 
     public function getId(): ?int
@@ -86,4 +93,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getVerificationToken(): ?string
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(?string $verificationToken): self
+    {
+        $this->verificationToken = $verificationToken;
+        return $this;
+    }
+
 }

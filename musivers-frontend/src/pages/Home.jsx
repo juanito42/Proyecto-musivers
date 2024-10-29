@@ -12,11 +12,10 @@ function Home() {
   return (
     <div className="home text-center">
       {/* Video de fondo */}
-      <video autoPlay muted loop className="video-background">
+      <video autoPlay muted className="video-background">
         <source src="/videos/musi.mp4" type="video/mp4" />
         Tu navegador no soporta el video.
       </video>
-      
     </div>
   );
 }

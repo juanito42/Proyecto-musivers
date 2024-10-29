@@ -99,7 +99,7 @@ login:
 # Ruta para registrar usuarios
 register:
     path: /api/register
-    controller: App\Controller\RegistrationController::register
+    controller: App\Controller\AuthController::register
     methods: [POST]
 
 # Ruta para listar usuarios

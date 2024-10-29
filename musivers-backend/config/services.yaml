@@ -34,6 +34,12 @@ services:
     #     arguments:
     #         $myParameter: '%kernel.project_dir%'
 
+    
+    App\Controller\AuthController:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     app.some_abstract_service:
         abstract: true
         class: 'App\SomeAbstractClass'

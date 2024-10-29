@@ -17,7 +17,6 @@
     height: 100%;
     object-fit: cover; /* Asegura que el video cubra toda el área */
     z-index: -1; /* Coloca el video detrás del contenido */
-    opacity: 0.7; /* Añade transparencia para que el texto sea más visible */
 }
 
 /* Contenido */
