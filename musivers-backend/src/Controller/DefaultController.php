@@ -8,9 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/hello", name="hello")
-     */
+    
+    #[Route('/hello', name: 'hello', methods: ['POST'])]
     public function hello(): JsonResponse
     {
         return $this->json(['message' => 'Hello World!']);

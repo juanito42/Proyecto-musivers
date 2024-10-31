@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'event')]  // Asegura que Doctrine use la tabla 'event'
+#[ORM\Table(name: 'event')]  
 class Event
 {
     #[ORM\Id]
@@ -33,13 +33,13 @@ class Event
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups("event:read")]
-    private ?string $url = null;  // Campo opcional para la URL
+    private ?string $url = null;  
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]  // Hacer la categoría opcional
+    #[ORM\Column(type: 'string', length: 255, nullable: true)] 
     #[Groups("event:read")]
-    private ?string $category = null;  // Inicializamos con null
+    private ?string $category = null;  
 
-    // Getters y Setters para cada propiedad
+    #########Getters y Setters#########
 
     public function getId(): ?int
     {

@@ -1,5 +1,4 @@
 <?php
-// src/Entity/Profile.php
 
 namespace App\Entity;
 
@@ -27,8 +26,10 @@ class Profile
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'profile')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null; // Cambiado a nullable
+    private ?User $user = null;
 
+    #########Getters y Setters#########
+    
     public function getId(): ?int
     {
         return $this->id;

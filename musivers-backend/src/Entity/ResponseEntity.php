@@ -38,6 +38,8 @@ class ResponseEntity
         $this->createdAt = new \DateTime();
         $this->subResponses = new ArrayCollection();
     }
+    
+    #########Getters y Setters#########
 
     public function getId(): ?int
     {

@@ -1,7 +1,8 @@
 <?php
-// src/Form/EventType.php
-namespace App\Form;
 
+// src/Form/EventType.php
+
+namespace App\Form;
 
 use App\Entity\Event;
 use Symfony\Component\Form\AbstractType;
@@ -14,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EventType extends AbstractType
 {
+    // Método para construir el formulario
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -23,9 +25,10 @@ class EventType extends AbstractType
             ->add('save', SubmitType::class, ['label' => 'Create Event']);
     }
 
-
+    // Método para configurar las opciones del formulario
     public function configureOptions(OptionsResolver $resolver): void
     {
+        // Se establece que el formulario está asociado a la clase de datos 'Event'
         $resolver->setDefaults([
             'data_class' => Event::class,
         ]);

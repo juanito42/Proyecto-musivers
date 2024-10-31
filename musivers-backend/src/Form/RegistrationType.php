@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationType extends AbstractType
 {
+    // Método para construir el formulario de registro
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -20,8 +21,10 @@ class RegistrationType extends AbstractType
             ->add('submit', SubmitType::class, ['label' => 'Register']);
     }
 
+    // Configura las opciones del formulario
     public function configureOptions(OptionsResolver $resolver): void
     {
+        // Establece que el formulario está asociado a la clase 'User'
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);

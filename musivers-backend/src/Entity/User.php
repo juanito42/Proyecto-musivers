@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $verificationToken = null;
 
     
-    // Métodos de la interfaz UserInterface y PasswordAuthenticatedUserInterface
+    #########Getters y Setters#########
 
     public function getId(): ?int
     {
@@ -84,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfile(Profile $profile): self
     {
-        // Asegurar que la relación bidireccional esté configurada correctamente
+        
         if ($profile->getUser() !== $this) {
             $profile->setUser($this);
         }

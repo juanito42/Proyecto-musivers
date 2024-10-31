@@ -20,7 +20,7 @@ class ProfileController extends AbstractController
     ) {
     }
 
-    // src/Controller/ProfileController.php
+    // Método para obtener el perfil del usuario autenticado
     #[Route('/api/profile', name: 'get_profile', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getProfile(): JsonResponse
@@ -29,10 +29,12 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
         $profile = $user->getProfile();
 
+        // Verificar si el perfil existe
         if (!$profile) {
             return new JsonResponse(['error' => 'Perfil no encontrado'], 404);
         }
 
+        // Retornar los datos del perfil en formato JSON
         return new JsonResponse([
             'firstName' => $profile->getFirstName(),
             'lastName' => $profile->getLastName(),
@@ -41,7 +43,7 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    
+    // Método para actualizar o crear el perfil del usuario autenticado
     #[Route('/api/profile', name: 'save_profile', methods: ['PUT'])]
     #[IsGranted('ROLE_USER')]
     public function saveProfile(Request $request): JsonResponse
@@ -52,15 +54,15 @@ class ProfileController extends AbstractController
             throw new AccessDeniedException('Usuario no autenticado.');
         }
 
-        // Obtener los datos enviados en la solicitud
+        // Obtener los datos enviados en el cuerpo de la solicitud
         $data = json_decode($request->getContent(), true);
 
-        // Validar los datos recibidos
+        // Validar que se hayan proporcionado los datos requeridos
         if (!$data || !isset($data['firstName'], $data['lastName'])) {
             return new JsonResponse(['error' => 'Datos inválidos'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Validar y asignar la fecha de nacimiento
+        // Validar y asignar la fecha de nacimiento si está proporcionada
         $birthDate = null;
         if (!empty($data['birthDate'])) {
             try {
@@ -82,10 +84,11 @@ class ProfileController extends AbstractController
             $user->setProfile($profile);
         }
 
-        // Persistir y guardar cambios siempre
+        // Guardar el perfil en la base de datos
         $this->entityManager->persist($profile);
         $this->entityManager->flush();
 
+        // Retornar una respuesta de éxito
         return new JsonResponse(['message' => 'Perfil actualizado correctamente.'], JsonResponse::HTTP_OK);
     }
 }

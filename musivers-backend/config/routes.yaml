@@ -2,13 +2,16 @@ homepage:
     path: /
     controller: App\Controller\HomeController::index
 
+########################################
+############# RUTAS EVENTOS ############
+
 # Ruta para la API de eventos (JSON response)
 api_events:
     path: /api/events
     controller: App\Controller\AdminEventController::listEventsApi
     methods: [GET]
 
-# Ruta para la creación de eventos desde el backend (Admin)
+# Ruta para la creación de eventos desde el backend 
 admin_create_event:
     path: /admin/events/new
     controller: App\Controller\AdminEventController::createEvent
@@ -20,7 +23,7 @@ admin_edit_event:
     controller: App\Controller\AdminEventController::editEvent
     methods: [GET, POST]
 
-# Ruta para ver los detalles de un evento específico (usando AdminEventController ahora)
+# Ruta para ver los detalles de un evento específico
 event_detail:
     path: /events/{id}
     controller: App\Controller\AdminEventController::showEvent
@@ -32,13 +35,26 @@ event_list:
     controller: App\Controller\AdminEventController::listEvents
     methods: [GET]
 
-# Ruta para eliminar un evento (Admin)
+# Ruta para eliminar un evento
 event_delete:
     path: /admin/events/delete/{id}
     controller: App\Controller\AdminEventController::deleteEvent
     methods: [POST]
 
-# Rutas para foros
+# Ruta para mostrar el formulario de creación de un nuevo evento
+admin_create_event_form:
+    path: /admin/events/new
+    controller: App\Controller\AdminEventController::createEventForm
+    methods: [GET]
+
+# Ruta para la creación de un nuevo evento a través de la API
+admin_create_event_api:
+    path: /api/admin/events/new
+    controller: App\Controller\AdminEventController::createEventApi
+    methods: [POST]
+
+######################################
+############# RUTAS FOROS ############
 
 # Ruta para la API de foros
 api_forums:
@@ -64,31 +80,33 @@ delete_forum:
     controller: App\Controller\ForumController::deleteForum
     methods: [DELETE]
 
+# Ruta para añadir una respuesta a un foro específico
 add_response:
     path: /forums/{id}/add-response
     controller: App\Controller\ForumController::addResponse
     methods: [GET, POST]
 
+# Ruta para añadir una respuesta a un foro mediante POST
 add_forum_response:
     path: /forums/{id}/response
     controller: App\Controller\ForumController::addResponseToForum
     methods: [POST]
 
+# Ruta para obtener todas las respuestas de un foro específico
 forum_responses:
     path: /api/forums/{id}/responses
     controller: App\Controller\ForumController::getResponses
     methods: [GET]
 
+# Ruta para añadir una sub-respuesta a una respuesta específica en un foro
 add_sub_response:
     path: /forums/{forumId}/response/{responseId}/subresponse
     controller: App\Controller\ForumController::addSubResponse
     methods: [POST]
-    
-    # Ruta para añadir sub-respuestas a una respuesta existente
-add_subresponse:
-    path: /forums/{id}/response/{responseId}/subresponse
-    controller: App\Controller\ForumController::addSubResponseToResponse
-    methods: [POST]
+
+
+######################################
+############# RUTAS LOGIN ############
 
 # Ruta para login usando JWT
 login:
@@ -108,29 +126,19 @@ users_list:
     controller: App\Controller\UserController::index
     methods: [GET]
 
-uploads:
-    path: /uploads/photos
-    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect
-
-admin_create_event_form:
-    path: /admin/events/new
-    controller: App\Controller\AdminEventController::createEventForm
-    methods: [GET]
-
-admin_create_event_api:
-    path: /api/admin/events/new
-    controller: App\Controller\AdminEventController::createEventApi
-    methods: [POST]
-
-
 # Ruta para obtener el perfil del usuario autenticado
 get_profile:
     path: /api/profile
     controller: App\Controller\ProfileController::getProfile
     methods: [GET]
 
+# Ruta para crear o actualizar el perfil del usuario autenticado
 save_profile:
     path: /api/profile
     controller: App\Controller\ProfileController::saveProfile
     methods: [POST, PUT]
 
+# Ruta para acceder a la carpeta de fotos subidas
+uploads:
+    path: /uploads/photos
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect

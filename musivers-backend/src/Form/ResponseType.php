@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResponseType extends AbstractType
 {
+    // Método que construye el formulario de respuesta
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -20,8 +21,10 @@ class ResponseType extends AbstractType
             ]);
     }
 
+    // Método para configurar las opciones del formulario
     public function configureOptions(OptionsResolver $resolver)
     {
+        // Define que este formulario está asociado a la clase 'ResponseEntity'
         $resolver->setDefaults([
             'data_class' => ResponseEntity::class,
         ]);
