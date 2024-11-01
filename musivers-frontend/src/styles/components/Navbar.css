@@ -1,0 +1,52 @@
+/* Navbar.css */
+
+/* Estilos generales para el Navbar */
+.navbar-custom {
+    background: linear-gradient(45deg, #3b82f6, #9333ea); /* Degradado de azul a morado */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Sombra para darle profundidad */
+  }
+  
+  .navbar-logo {
+    height: 60px; /* Altura exacta del logo para ajustarse al Navbar */
+    object-fit: cover;
+    margin: 0; /* Elimina márgenes alrededor del logo */
+    padding: 0;
+  }
+  
+  /* Estilo para enlaces de navegación */
+  .nav-link-custom {
+    font-weight: 500;
+    color: #ffffff !important;
+  }
+  
+  /* Estilo del botón "Crear Evento" y otros botones */
+  .btn-custom {
+    border-radius: 20px;
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    color: white;
+  }
+  
+  /* Estilo para la barra de búsqueda */
+  .search-bar {
+    width: 200px;
+    border-radius: 20px;
+    padding: 0.4rem;
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo translúcido */
+    color: #ffffff;
+    border: none;
+    outline: none;
+    font-weight: 500;
+  }
+  
+  /* Menú de dropdown */
+  .dropdown-menu-custom {
+    max-height: 150px;
+    overflow-y: scroll;
+    background-color: #ffffff;
+  }
+  
+  .dropdown-item-custom {
+    color: #3b82f6;
+  }
+  

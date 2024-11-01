@@ -1,0 +1,56 @@
+/* Contenedor principal de la página de eventos */
+.events-container {
+    margin-top: 2rem;
+}
+
+/* Encabezado de la página de eventos */
+.events-header {
+    font-weight: bold;
+    color: #3b82f6;
+    text-align: center;
+}
+
+/* Estilo para la tarjeta de evento */
+.event-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen de la tarjeta de evento */
+.event-card-img {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+}
+
+/* Título de la tarjeta */
+.event-card-title {
+    color: #333333;
+    font-weight: bold;
+}
+
+/* Descripción de la tarjeta */
+.event-card-description {
+    color: #555555;
+}
+
+/* Fecha del evento */
+.event-card-date {
+    color: #888888;
+}
+
+/* Categoría del evento */
+.event-card-category {
+    font-weight: bold;
+    color: #1da1f2;
+}
+
+/* Botón de más información */
+.event-info-button {
+    border-radius: 20px;
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    color: white;
+    font-weight: bold;
+}

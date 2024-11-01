@@ -1,0 +1,56 @@
+/* Contenedor de la categoría */
+.category-container {
+    margin-top: 2rem;
+}
+
+/* Encabezado de la página */
+.category-header {
+    color: #3b82f6;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Estilos para los contenedores de tarjetas */
+.event-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen de la tarjeta del evento */
+.event-card-img {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+}
+
+/* Título del evento */
+.event-card-title {
+    color: #333333;
+    font-weight: bold;
+}
+
+/* Descripción del evento */
+.event-card-text {
+    color: #555555;
+}
+
+/* Fecha del evento */
+.event-card-date {
+    color: #888888;
+}
+
+/* Categoría del evento */
+.event-card-category {
+    font-weight: bold;
+    color: #1da1f2;
+}
+
+/* Botón de más información */
+.event-info-button {
+    border-radius: 20px;
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    color: white;
+    font-weight: bold;
+}

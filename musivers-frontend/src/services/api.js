@@ -1,8 +1,9 @@
 // src/services/api.js
+
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // Verifica que el puerto y URL sean correctos
+  baseURL: 'http://localhost:8000', 
 });
 
 // Configuración del token de autenticación en cada solicitud
@@ -26,7 +27,7 @@ export const getEvents = () => api.get('/api/events');
 // Función para crear un nuevo evento
 export const createEvent = async (newEvent) => {
   try {
-    const response = await api.post('/api/admin/events', newEvent);  // Asegúrate de que coincida con la ruta en el backend
+    const response = await api.post('/api/admin/events', newEvent);
     console.log('Evento creado:', response.data);
     return response.data;
   } catch (error) {
@@ -37,7 +38,7 @@ export const createEvent = async (newEvent) => {
 // Función para crear un nuevo foro
 export const createForum = async (newForum) => {
   try {
-    const response = await api.post('/api/forums/new', newForum);  // Usar la ruta correcta y verificar que exista en el backend
+    const response = await api.post('/api/forums/new', newForum);  
     console.log('Foro creado:', response.data);
     return response.data;
   } catch (error) {
@@ -75,7 +76,7 @@ export const getProfile = async () => {
 // Función para crear o actualizar el perfil del usuario autenticado
 export const saveProfile = async (profileData) => {
   try {
-    const response = await api.put('/api/profile', profileData); // Cambiado a PUT para actualización
+    const response = await api.put('/api/profile', profileData);
     console.log('Perfil guardado:', response.data);
     return response.data;
   } catch (error) {

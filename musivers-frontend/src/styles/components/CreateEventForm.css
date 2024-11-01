@@ -1,0 +1,57 @@
+/* Contenedor principal */
+.create-event-container {
+    margin-top: 2rem;
+  }
+  
+  /* Tarjeta del formulario */
+  .create-event-card {
+    background-color: #333333;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Encabezado de la tarjeta */
+  .create-event-header {
+    background-color: #3b82f6;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Estilo para los campos de entrada de texto */
+  .create-event-input {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  /* Botón de enviar */
+  .create-event-button {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* Dropdown de categorías */
+  .create-event-dropdown {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  /* Menú del dropdown */
+  .create-event-dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  /* Estilos de las opciones del dropdown */
+  .create-event-dropdown-item {
+    color: #000;
+  }
+  

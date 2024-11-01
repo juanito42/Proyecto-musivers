@@ -1,0 +1,48 @@
+/* Contenedor para centrar y limitar el ancho del formulario */
+.auth-form-container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Estilos para el título del formulario */
+  .auth-form-title {
+    color: #3b82f6;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Estilos para el mensaje de error */
+  .auth-form-error {
+    text-align: center;
+  }
+  
+  /* Estilos principales del formulario */
+  .auth-form {
+    background-color: #333;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Estilos de los campos de entrada para un aspecto uniforme */
+  .auth-form .form-control {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  /* Estilos del botón de envío */
+  .auth-form-button {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    font-weight: bold;
+    border-radius: 10px;
+  }
+  
+  /* Estilos del botón secundario */
+  .auth-form-secondary-button {
+    border-radius: 10px;
+    font-weight: bold;
+  }
+  

@@ -1,0 +1,36 @@
+/* Contenedor principal de la página de perfil */
+.profile-container {
+    margin-top: 3rem;
+}
+
+/* Tarjeta de perfil */
+.profile-card {
+    background-color: #4f8fcf;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado de la tarjeta de perfil */
+.profile-header {
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Botón para crear o editar perfil */
+.create-edit-profile-button {
+    background-color: #22b65b;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #051225;
+}
+
+/* Estilo para el ícono de carga */
+.loading-spinner {
+    margin-bottom: 1rem;
+    color: #3b82f6;
+}

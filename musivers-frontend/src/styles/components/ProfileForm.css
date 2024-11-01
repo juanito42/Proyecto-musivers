@@ -1,0 +1,36 @@
+/* Contenedor principal del formulario de perfil */
+.profile-container {
+    margin-top: 2rem;
+}
+
+/* Estilos de la tarjeta del formulario */
+.profile-card {
+    background-color: #333333;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado de la tarjeta del formulario */
+.profile-card-header {
+    background-color: #3b82f6;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+/* Estilos para los campos de entrada del formulario */
+.profile-input {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: none;
+}
+
+/* Botón para guardar el perfil */
+.profile-save-button {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 100%;
+}

@@ -1,21 +1,26 @@
-// src/pages/Register.js
+// src/pages/Register.jsx
+
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/pages/Register.css'; 
 
 const Register = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [email, setEmail] = useState(''); // Estado para almacenar el email
+    const [password, setPassword] = useState(''); // Estado para almacenar la contraseña
+    const [confirmPassword, setConfirmPassword] = useState(''); // Estado para confirmar la contraseña
 
+    // Maneja el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Verifica que las contraseñas coincidan
         if (password !== confirmPassword) {
             alert('Las contraseñas no coinciden');
             return;
         }
 
         try {
+            // Realiza la solicitud de registro al backend
             const response = await axios.post('http://localhost:8000/api/register', {
                 email,
                 password,
@@ -29,40 +34,42 @@ const Register = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h1>Registro</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Email:</label>
+        <div className="container register-container">
+            <h1 className="register-title">Registro</h1>
+            <form onSubmit={handleSubmit} className="register-form">
+                <div className="form-group mb-3">
+                    <label className="text-white">Email:</label>
                     <input
                         type="email"
-                        className="form-control"
+                        className="form-control register-input"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
-                <div className="form-group">
-                    <label>Contraseña:</label>
+                <div className="form-group mb-3">
+                    <label className="text-white">Contraseña:</label>
                     <input
                         type="password"
-                        className="form-control"
+                        className="form-control register-input"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
-                <div className="form-group">
-                    <label>Confirmar Contraseña:</label>
+                <div className="form-group mb-3">
+                    <label className="text-white">Confirmar Contraseña:</label>
                     <input
                         type="password"
-                        className="form-control"
+                        className="form-control register-input"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary mt-3">Registrarse</button>
+                <button type="submit" className="btn register-button">
+                    Registrarse
+                </button>
             </form>
         </div>
     );

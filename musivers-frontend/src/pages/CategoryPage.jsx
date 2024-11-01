@@ -1,86 +1,100 @@
+// src/pages/CategoryPage.jsx
+
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-
+import '../styles/pages/CategoryPage.css'; 
 const CategoryPage = () => {
-  const { category } = useParams(); // Obtener la categoría de los parámetros de la URL
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para mostrar carga
+  const { category } = useParams(); // Obtiene la categoría actual de los parámetros de la URL
+  const [events, setEvents] = useState([]); // Estado para almacenar eventos por categoría
+  const [loading, setLoading] = useState(true); // Estado de carga de datos
 
+  // Función para obtener eventos de una categoría específica
   const fetchEventsByCategory = useCallback(async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // Obtiene el token de autenticación
     if (!token) {
-        console.error('Token no encontrado, redirigiendo al login');
-        return;
+      console.error('Token no encontrado, redirigiendo al login');
+      return;
     }
 
     try {
-        const response = await axios.get(`http://localhost:8000/api/events?category=${category}`, {
-            headers: {
-                Authorization: `Bearer ${token}`, // Asegúrate de que el token JWT se envía aquí
-            },
-        });
-        setEvents(response.data); // Actualiza el estado con los eventos obtenidos
+      const response = await axios.get(`http://localhost:8000/api/events?category=${category}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Incluye el token en el header de la solicitud
+        },
+      });
+      setEvents(response.data); // Actualiza el estado con los eventos obtenidos
     } catch (error) {
-        console.error('Error obteniendo los eventos:', error);
+      console.error('Error obteniendo los eventos:', error);
     } finally {
-        setLoading(false); // Deja de mostrar el cargando cuando la petición termina
+      setLoading(false); // Desactiva el estado de carga después de la solicitud
     }
   }, [category]);
 
+  // Efecto para cargar los eventos al montar el componente o cambiar de categoría
   useEffect(() => {
     fetchEventsByCategory();
   }, [fetchEventsByCategory]);
 
   if (loading) {
+    // Muestra un mensaje de carga mientras se obtienen los eventos
     return <div className="container mt-5 text-center">Cargando eventos...</div>;
   }
 
   return (
-    <div className="container">
-      <h1 className="mt-5 text-center">{category}</h1>
+    <div className="container category-container">
+      <h1 className="category-header">{category}</h1>
       <div className="row">
         {events.length === 0 ? (
-          <p>No hay eventos disponibles para esta categoría</p>
+          // Muestra un mensaje si no hay eventos en esta categoría
+          <p className="text-center">No hay eventos disponibles para esta categoría</p>
         ) : (
           events.map((event, index) => (
-            <div className="col-md-6 col-lg-3 mb-4" key={event.id || index}> {/* 4 columnas por fila en pantallas grandes */}
-              <div className="card h-100 shadow-sm">
+            <div className="col-md-6 col-lg-3 mb-4" key={event.id || index}>
+              <div className="card h-100 event-card">
                 <div className="card-img-container">
                   {event.photoFilename ? (
                     <img
                       src={`http://localhost:8000/uploads/photos/${event.photoFilename}`}
-                      className="card-img-top img-fluid"
+                      className="card-img-top img-fluid event-card-img"
                       alt={event.title}
-                      style={{ objectFit: "cover", height: "200px", width: "100%" }}
                     />
                   ) : (
                     <img
                       src="http://localhost:8000/uploads/photos/default-event.jpg"
-                      className="card-img-top img-fluid"
+                      className="card-img-top img-fluid event-card-img"
                       alt="Evento sin foto"
-                      style={{ objectFit: "cover", height: "200px", width: "100%" }}
                     />
                   )}
                 </div>
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{event.title || "Título no disponible"}</h5>
-                  <p className="card-text">{event.description || "Descripción no disponible"}</p>
-                  <p className="card-text mt-auto">
+                  <h5 className="card-title event-card-title">
+                    {event.title || "Título no disponible"}
+                  </h5>
+                  <p className="card-text event-card-text">
+                    {event.description || "Descripción no disponible"}
+                  </p>
+                  <p className="card-text mt-auto event-card-date">
                     <small>
                       {event.date ? dayjs(event.date).format("YYYY-MM-DD HH:mm") : "Fecha no disponible"}
                     </small>
                   </p>
 
-                  {/* Mostrar la categoría del evento */}
-                  <p className="card-text">
+                  {/* Muestra la categoría del evento */}
+                  <p className="card-text event-card-category">
                     <strong>Categoría:</strong> {event.category || "Categoría no disponible"}
                   </p>
 
+                  {/* Botón para más información si el evento tiene URL */}
                   <div className="d-flex justify-content-between mt-2">
                     {event.url && (
-                      <a href={event.url} target="_blank" rel="noopener noreferrer" className="btn btn-info">
+                      <a
+                        href={event.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-info event-info-button"
+                      >
                         Más información
                       </a>
                     )}

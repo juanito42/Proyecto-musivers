@@ -1,52 +1,48 @@
+// src/components/AuthForm.jsx
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/components/AuthForm.css'; 
 
 const AuthForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const [email, setEmail] = useState(''); // Estado para almacenar el email
+    const [password, setPassword] = useState(''); // Estado para almacenar la contraseña
+    const [loading, setLoading] = useState(false); // Estado para indicar carga
+    const [error, setError] = useState(null); // Estado para manejar mensajes de error
+    const navigate = useNavigate(); // Hook de React Router para redirigir
 
+    // Maneja el proceso de inicio de sesión
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
         try {
-            // Realiza la solicitud de inicio de sesión
-            const response = await axios.post('http://localhost:8000/api/login', {
-                email,
-                password,
-            });
-
-            // Obtenemos el token JWT de la respuesta
-            const token = response.data.token;
-
-            // Guardamos el token en localStorage
-            localStorage.setItem('token', token);
+            const response = await axios.post('http://localhost:8000/api/login', { email, password });
+            const token = response.data.token; // Extrae el token de la respuesta
+            localStorage.setItem('token', token); // Almacena el token en localStorage
             console.log('Inicio de sesión exitoso, token almacenado:', token);
-
-            // Redirige al usuario a la página de foros o donde desees
-            navigate('/');
+            navigate('/'); // Redirige a la página principal tras el inicio de sesión
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setError('Credenciales inválidas o servidor no disponible');
         } finally {
-            setLoading(false); // Termina el indicador de carga
+            setLoading(false); // Desactiva el indicador de carga
         }
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Iniciar Sesión</h2>
+        <div className="container mt-5 auth-form-container">
+            <h2 className="auth-form-title">Iniciar Sesión</h2>
 
-            {error && <div className="alert alert-danger">{error}</div>}
+            {/* Mensaje de error */}
+            {error && <div className="alert alert-danger auth-form-error">{error}</div>}
 
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} className="auth-form">
+                {/* Campo de entrada para el email */}
                 <div className="form-group mb-3">
-                    <label>Email:</label>
+                    <label className="text-white">Email:</label>
                     <input
                         type="email"
                         className="form-control"
@@ -55,8 +51,10 @@ const AuthForm = () => {
                         required
                     />
                 </div>
+
+                {/* Campo de entrada para la contraseña */}
                 <div className="form-group mb-3">
-                    <label>Contraseña:</label>
+                    <label className="text-white">Contraseña:</label>
                     <input
                         type="password"
                         className="form-control"
@@ -66,15 +64,21 @@ const AuthForm = () => {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary" disabled={loading}>
+                {/* Botón de envío con indicador de carga */}
+                <button
+                    type="submit"
+                    className="btn btn-primary w-100 auth-form-button"
+                    disabled={loading}
+                >
                     {loading ? 'Iniciando...' : 'Iniciar Sesión'}
                 </button>
             </form>
 
-            <div className="mt-3">
-                <button 
-                    className="btn btn-secondary"
-                    onClick={() => navigate('/register')} 
+            {/* Botón para redirigir a la página de registro */}
+            <div className="text-center mt-3">
+                <button
+                    className="btn btn-secondary auth-form-secondary-button"
+                    onClick={() => navigate('/register')}
                 >
                     Registrarse
                 </button>

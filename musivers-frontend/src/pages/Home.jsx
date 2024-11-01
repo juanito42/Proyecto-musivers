@@ -1,7 +1,9 @@
+// src/pages/Home.jsx
+
 import React, { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
-import "./Home.css";
+import '../styles/pages/Home.css';
 
 function Home() {
   const audioRef = useRef(null);

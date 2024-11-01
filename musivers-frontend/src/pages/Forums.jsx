@@ -1,19 +1,22 @@
+// src/pages/Forums.jsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import '../styles/pages/Forums.css'; 
 
 const Forums = () => {
-  const [forums, setForums] = useState([]);
-  const [responseContent, setResponseContent] = useState({}); // Estado para manejar el contenido de respuesta por foro
-  const [responses, setResponses] = useState({});
-  const [subResponseContent, setSubResponseContent] = useState({}); // Estado para manejar las sub-respuestas
-  const [activeForumId, setActiveForumId] = useState(null); // Controla cuál foro está activo (mostrando respuestas)
-  const [activeForumReplyForm, setActiveForumReplyForm] = useState(null); // Controla si se está respondiendo a un foro directamente
-  const [activeReplyForm, setActiveReplyForm] = useState(null); // Controla cuál respuesta está recibiendo sub-respuestas
+  const [forums, setForums] = useState([]); // Estado para almacenar los foros
+  const [responseContent, setResponseContent] = useState({}); // Estado para manejar el contenido de la respuesta
+  const [responses, setResponses] = useState({}); // Estado para almacenar respuestas de los foros
+  const [subResponseContent, setSubResponseContent] = useState({}); // Estado para manejar contenido de sub-respuestas
+  const [activeForumId, setActiveForumId] = useState(null); // Identificador del foro activo
+  const [activeForumReplyForm, setActiveForumReplyForm] = useState(null); // Formulario de respuesta activa en un foro
+  const [activeReplyForm, setActiveReplyForm] = useState(null); // Formulario de sub-respuesta activa
   const navigate = useNavigate();
 
-  // Función para obtener los foros
+  // Función para obtener los foros desde el backend
   const fetchForums = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -23,11 +26,9 @@ const Forums = () => {
 
     try {
       const response = await axios.get("http://localhost:8000/api/forums", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setForums(response.data); // Actualiza la lista de foros
+      setForums(response.data); // Actualiza el estado de foros
     } catch (error) {
       console.error("Error obteniendo los foros:", error);
     }
@@ -36,262 +37,179 @@ const Forums = () => {
   // Función para obtener las respuestas de un foro
   const fetchResponses = async (forumId) => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("No token found");
-      return;
-    }
-
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/forums/${forumId}/responses`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setResponses((prev) => ({ ...prev, [forumId]: response.data }));
+      const response = await axios.get(`http://localhost:8000/api/forums/${forumId}/responses`, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      setResponses((prev) => ({ ...prev, [forumId]: response.data })); // Actualiza respuestas del foro en el estado
     } catch (error) {
       console.error("Error obteniendo respuestas:", error);
     }
   };
 
-  // Función para alternar la visibilidad de las respuestas y ocultar los otros foros
+  // Alterna la visibilidad de respuestas en un foro
   const toggleResponses = (forumId) => {
     if (activeForumId === forumId) {
-      // Si el foro ya está activo, ocultamos todo y volvemos a mostrar todos los foros
-      setActiveForumId(null);
+      setActiveForumId(null); // Oculta respuestas si ya están visibles
     } else {
-      // Si seleccionamos otro foro, mostramos solo este y ocultamos los demás
       fetchResponses(forumId);
-      setActiveForumId(forumId);
+      setActiveForumId(forumId); // Muestra respuestas del foro seleccionado
     }
   };
 
-  // Función para manejar los cambios en el campo de respuesta de un foro específico
+  // Actualiza el estado cuando se cambia el contenido de respuesta
   const handleResponseChange = (forumId, content) => {
-    setResponseContent((prev) => ({
-      ...prev,
-      [forumId]: content,
-    }));
+    setResponseContent((prev) => ({ ...prev, [forumId]: content }));
   };
 
-  // Función para manejar los cambios en el campo de sub-respuesta de una respuesta específica
+  // Actualiza el estado cuando se cambia el contenido de sub-respuesta
   const handleSubResponseChange = (responseId, content) => {
-    setSubResponseContent((prev) => ({
-      ...prev,
-      [responseId]: content,
-    }));
+    setSubResponseContent((prev) => ({ ...prev, [responseId]: content }));
   };
 
-  // Función para enviar una nueva respuesta al foro
+  // Enviar respuesta a un foro
   const handleForumResponseSubmit = async (e, forumId) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      await axios.post(
-        `http://localhost:8000/forums/${forumId}/response`,
-        { content: responseContent[forumId] },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setResponseContent((prev) => ({ ...prev, [forumId]: "" })); // Limpiar el campo de respuesta
-      setActiveForumReplyForm(null); // Ocultar el formulario después de enviar la respuesta
-      fetchResponses(forumId);
+      await axios.post(`http://localhost:8000/forums/${forumId}/response`, { content: responseContent[forumId] }, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      setResponseContent((prev) => ({ ...prev, [forumId]: "" })); // Limpia el campo de respuesta
+      setActiveForumReplyForm(null); // Oculta el formulario de respuesta
+      fetchResponses(forumId); // Refresca respuestas del foro
     } catch (error) {
       console.error("Error al enviar la respuesta:", error);
     }
   };
 
-  // Función para enviar una sub-respuesta a una respuesta específica
+  // Enviar sub-respuesta a una respuesta en un foro
   const handleSubResponseSubmit = async (e, forumId, responseId) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      await axios.post(
-        `http://localhost:8000/forums/${forumId}/response/${responseId}/subresponse`,
-        { content: subResponseContent[responseId] },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setSubResponseContent((prev) => ({ ...prev, [responseId]: "" }));
-      setActiveReplyForm(null); // Ocultar el formulario después de enviar la sub-respuesta
-      fetchResponses(forumId); // Refresca las respuestas después de añadir una sub-respuesta
+      await axios.post(`http://localhost:8000/forums/${forumId}/response/${responseId}/subresponse`, {
+        content: subResponseContent[responseId]
+      }, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      setSubResponseContent((prev) => ({ ...prev, [responseId]: "" })); // Limpia el campo de sub-respuesta
+      setActiveReplyForm(null); // Oculta el formulario de sub-respuesta
+      fetchResponses(forumId); // Refresca respuestas
     } catch (error) {
       console.error("Error al enviar la sub-respuesta:", error);
     }
   };
 
-  // Función para redirigir a la página de creación de foros
-  const goToCreateForum = () => {
-    navigate("/forums/new"); // Cambia '/forums/new' por la ruta correcta en tu aplicación
-  };
+  // Redirige a la página para crear un nuevo foro
+  const goToCreateForum = () => navigate("/forums/new");
 
+  // Ejecuta la función para cargar los foros al montar el componente
   useEffect(() => {
     fetchForums();
   }, [fetchForums]);
 
   return (
-    <div className="container">
-      <h1 className="mt-5">Foros</h1>
+    <div className="container forums-container">
+      <h1 className="forums-header">Foros</h1>
 
-      {/* Botón para crear un nuevo foro */}
-      <div className="mb-4">
-        <button className="btn btn-success" onClick={goToCreateForum}>
-          Añadir nuevo foro
-        </button>
+      {/* Botón para añadir un nuevo foro */}
+      <div className="mb-4 d-flex justify-content-center">
+        <button className="btn add-forum-button" onClick={goToCreateForum}>Añadir nuevo foro</button>
       </div>
 
+      {/* Lista de foros */}
       <div className="row">
-        {forums.map(
-          (forum) =>
-            // Solo mostrar el foro seleccionado o todos los foros si no hay foro activo
-            (activeForumId === null || activeForumId === forum.id) && (
-              <div className="col-md-4" key={forum.id}>
-                <div className="card mb-4 shadow-sm">
-                  <div className="card-body">
-                    <h5 className="card-title">{forum.title}</h5>
-                    <p className="card-text">{forum.description}</p>
+        {forums.map((forum) => (
+          (activeForumId === null || activeForumId === forum.id) && (
+            <div className="col-md-4" key={forum.id}>
+              <div className="card mb-4 forum-card">
+                <div className="card-body">
+                  <h5 className="forum-title">{forum.title}</h5>
+                  <p className="forum-description">{forum.description}</p>
 
-                    {/* Botón de responder al foro */}
-                    <div className="d-flex justify-content-between align-items-center">
-                      <button
-                        className="btn btn-primary mb-3"
-                        onClick={() => setActiveForumReplyForm(forum.id)}
-                      >
-                        Responder al foro
-                      </button>
-                      <button
-                        className="btn btn-secondary mb-3"
-                        onClick={() => toggleResponses(forum.id)}
-                      >
-                        {activeForumId === forum.id
-                          ? "Ocultar respuestas"
-                          : "Ver respuestas"}
-                      </button>
-                    </div>
-
-                    {/* Formulario para responder al foro */}
-                    {activeForumReplyForm === forum.id && (
-                      <form
-                        onSubmit={(e) => handleForumResponseSubmit(e, forum.id)}
-                        className="mb-4"
-                      >
-                        <textarea
-                          className="form-control"
-                          placeholder="Escribe tu respuesta al foro"
-                          value={responseContent[forum.id] || ""}
-                          onChange={(e) =>
-                            handleResponseChange(forum.id, e.target.value)
-                          }
-                        />
-                        <button type="submit" className="btn btn-success mt-2">
-                          Enviar respuesta
-                        </button>
-                      </form>
-                    )}
-
-                    {activeForumId === forum.id && (
-                      <>
-                        <h6>Respuestas:</h6>
-                        {responses[forum.id] &&
-                          responses[forum.id].length > 0 && (
-                            <ul>
-                              {responses[forum.id].map((response) => (
-                                <li key={`response-${response.id}`}>
-                                  {response.content} <br />
-                                  <small className="text-muted">
-                                    Fecha:{" "}
-                                    {dayjs(response.createdAt).format(
-                                      "DD/MM/YYYY HH:mm"
-                                    )}
-                                  </small>
-                                  {/* Sub-respuestas */}
-                                  {response.subResponses &&
-                                    response.subResponses.length > 0 && (
-                                      <ul
-                                        style={{
-                                          marginLeft: "20px",
-                                          backgroundColor: "#f8f9fa",
-                                        }}
-                                      >
-                                        {response.subResponses.map(
-                                          (subResponse) => (
-                                            <li
-                                              key={`subresponse-${subResponse.id}`}
-                                            >
-                                              {subResponse.content} <br />
-                                              <small className="text-muted">
-                                                Fecha:{" "}
-                                                {dayjs(
-                                                  subResponse.createdAt
-                                                ).format("DD/MM/YYYY HH:mm")}
-                                              </small>
-                                            </li>
-                                          )
-                                        )}
-                                      </ul>
-                                    )}
-                                  {/* Formulario para añadir sub-respuesta */}
-                                  <button
-                                    className="btn btn-link"
-                                    onClick={() =>
-                                      setActiveReplyForm(response.id)
-                                    }
-                                  >
-                                    Responder
-                                  </button>
-                                  {activeReplyForm === response.id && (
-                                    <form
-                                      onSubmit={(e) =>
-                                        handleSubResponseSubmit(
-                                          e,
-                                          forum.id,
-                                          response.id
-                                        )
-                                      }
-                                    >
-                                      <textarea
-                                        className="form-control"
-                                        placeholder="Añadir sub-respuesta"
-                                        value={
-                                          subResponseContent[response.id] || ""
-                                        }
-                                        onChange={(e) =>
-                                          handleSubResponseChange(
-                                            response.id,
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                      <button
-                                        type="submit"
-                                        className="btn btn-primary mt-2"
-                                      >
-                                        Añadir respuesta
-                                      </button>
-                                    </form>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                      </>
-                    )}
+                  {/* Botones para responder y ver/ocultar respuestas */}
+                  <div className="d-flex justify-content-between align-items-center">
+                    <button
+                      className="btn btn-outline-primary forum-button"
+                      onClick={() => setActiveForumReplyForm(forum.id)}
+                    >
+                      Responder
+                    </button>
+                    <button
+                      className="btn btn-outline-secondary forum-button"
+                      onClick={() => toggleResponses(forum.id)}
+                    >
+                      {activeForumId === forum.id ? "Ocultar respuestas" : "Ver respuestas"}
+                    </button>
                   </div>
+
+                  {/* Formulario de respuesta */}
+                  {activeForumReplyForm === forum.id && (
+                    <form onSubmit={(e) => handleForumResponseSubmit(e, forum.id)} className="mb-4">
+                      <textarea
+                        className="form-control forum-response-textarea"
+                        placeholder="Escribe tu respuesta al foro"
+                        value={responseContent[forum.id] || ""}
+                        onChange={(e) => handleResponseChange(forum.id, e.target.value)}
+                      />
+                      <button type="submit" className="btn submit-button mt-2">Enviar respuesta</button>
+                    </form>
+                  )}
+
+                  {/* Respuestas y sub-respuestas del foro */}
+                  {activeForumId === forum.id && responses[forum.id] && (
+                    <>
+                      <h6 className="mt-3" style={{ color: '#3b82f6', fontWeight: 'bold' }}>Respuestas:</h6>
+                      <ul className="list-unstyled">
+                        {responses[forum.id].map((response) => (
+                          <li key={response.id} className="mb-3">
+                            <div className="response-container">
+                              <p style={{ color: '#333333' }}>{response.content}</p>
+                              <small className="text-muted">
+                                Fecha: {dayjs(response.createdAt).format("DD/MM/YYYY HH:mm")}
+                              </small>
+                            </div>
+
+                            {/* Sub-respuestas */}
+                            {Array.isArray(response.subResponses) && response.subResponses.length > 0 && (
+                              <ul className="list-unstyled">
+                                {response.subResponses.map((subResponse) => (
+                                  <li key={subResponse.id} className="sub-response-container mt-2">
+                                    <p style={{ color: '#555555' }}>{subResponse.content}</p>
+                                    <small className="text-muted">
+                                      Fecha: {dayjs(subResponse.createdAt).format("DD/MM/YYYY HH:mm")}
+                                    </small>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+
+                            {/* Botón y formulario para añadir sub-respuestas */}
+                            <button className="btn btn-link text-primary" onClick={() => setActiveReplyForm(response.id)}>
+                              Responder
+                            </button>
+                            {activeReplyForm === response.id && (
+                              <form onSubmit={(e) => handleSubResponseSubmit(e, forum.id, response.id)}>
+                                <textarea
+                                  className="form-control sub-response-textarea"
+                                  placeholder="Añadir sub-respuesta"
+                                  value={subResponseContent[response.id] || ""}
+                                  onChange={(e) => handleSubResponseChange(response.id, e.target.value)}
+                                />
+                                <button type="submit" className="btn submit-button mt-2">Añadir respuesta</button>
+                              </form>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
               </div>
-            )
-        )}
+            </div>
+          )
+        ))}
       </div>
     </div>
   );

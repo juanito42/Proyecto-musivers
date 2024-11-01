@@ -1,0 +1,56 @@
+/* Contenedor principal del formulario de creación de foro */
+.create-forum-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #3b82f6, #9333ea);
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+}
+
+/* Título del formulario */
+.create-forum-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+
+/* Estilo general para el formulario */
+.create-forum-form {
+    padding: 1rem;
+}
+
+/* Estilos de etiqueta para el título y descripción */
+.create-forum-label {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+/* Estilo del campo de entrada de texto */
+.create-forum-input {
+    border-radius: 15px;
+    padding: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: none;
+}
+
+/* Estilo del área de texto */
+.create-forum-textarea {
+    border-radius: 15px;
+    padding: 0.75rem;
+    min-height: 100px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: none;
+}
+
+/* Botón de envío */
+.create-forum-button {
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: #14b8a6;
+    color: #ffffff;
+    border: none;
+}

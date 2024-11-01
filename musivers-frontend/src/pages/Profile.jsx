@@ -1,54 +1,59 @@
+// src/pages/Profile.jsx
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, Button, Card, Row, Col } from 'react-bootstrap'; // Asegúrate de importar estos componentes
+import { Container, Button, Card, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faUserPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import '../styles/pages/Profile.css'; 
 
 const Profile = () => {
-  const [profileData, setProfileData] = useState(null);
-  const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null); // Estado para almacenar los datos del perfil
+  const navigate = useNavigate(); // Hook para redirigir a otra página
 
+  // Cargar datos del perfil al montar el componente
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); // Obtiene el token de autenticación
         const response = await axios.get('/api/profile', {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }, // Envía el token en la cabecera de la solicitud
         });
-        setProfileData(response.data);
+        setProfileData(response.data); // Almacena los datos del perfil en el estado
       } catch (error) {
-        console.error('Error fetching profile:', error);
-        setProfileData(null);
+        console.error('Error obteniendo el perfil:', error);
+        setProfileData(null); // Si falla la solicitud, establece el perfil en null
       }
     };
 
     fetchProfile();
   }, []);
 
+  // Muestra un mensaje de carga mientras se obtienen los datos del perfil
   if (!profileData) {
     return (
-      <Container className="mt-5 text-center">
-        <FontAwesomeIcon icon={faSpinner} spin size="2x" className="mb-3" />
-        <p>Loading profile...</p>
+      <Container className="profile-container text-center">
+        <FontAwesomeIcon icon={faSpinner} spin size="2x" className="loading-spinner" />
+        <p>Cargando perfil...</p>
         <Button
           variant="primary"
           onClick={() => navigate('/profile_form')}
-          className="mt-3"
+          className="mt-3 create-edit-profile-button"
         >
           <FontAwesomeIcon icon={faUserPlus} className="me-2" />
-          Create Profile
+          Crear Perfil
         </Button>
       </Container>
     );
   }
 
   return (
-    <Container className="mt-5">
-      <Card className="bg-light">
-        <Card.Header className="bg-dark text-white text-center">
-          <h3>Perfil de {profileData.firstName}</h3>
+    <Container className="profile-container">
+      <Card className="profile-card">
+        <Card.Header className="profile-header">
+          Perfil de {profileData.firstName}
         </Card.Header>
         <Card.Body>
           <Row>
@@ -65,6 +70,7 @@ const Profile = () => {
             <Button
               variant="secondary"
               onClick={() => navigate('/profile_form')}
+              className="create-edit-profile-button"
             >
               <FontAwesomeIcon icon={faEdit} className="me-2" />
               Editar Perfil

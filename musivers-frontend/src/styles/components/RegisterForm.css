@@ -1,0 +1,38 @@
+/* Contenedor principal para centrar el formulario */
+.register-container {
+    margin-top: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Encabezado del formulario */
+.register-header {
+    color: #3b82f6;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Estilos para el formulario */
+.register-form {
+    background-color: #333333;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para los campos de entrada */
+.register-input {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Botón de registro */
+.register-button {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 100%;
+}
