@@ -39,7 +39,7 @@ class ProfileController extends AbstractController
             'firstName' => $profile->getFirstName(),
             'lastName' => $profile->getLastName(),
             'bio' => $profile->getBio(),
-            'birthDate' => $profile->getBirthDate()?->format('Y-m-d'),
+            'birthDate' => $profile->getBirthDate()?->format('d-m-Y'),
         ]);
     }
 

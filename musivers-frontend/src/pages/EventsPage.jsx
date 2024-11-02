@@ -78,7 +78,7 @@ const EventsPage = () => {
                 </p>
                 <p className="card-text mt-auto event-card-date">
                   <small>
-                    {event.date ? dayjs(event.date).format("YYYY-MM-DD HH:mm") : "Fecha no disponible"}
+                    {event.date ? dayjs(event.date).format("DD-MM-YYYY HH:mm") : "Fecha no disponible"}
                   </small>
                 </p>
 

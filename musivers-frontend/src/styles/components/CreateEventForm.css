@@ -1,19 +1,20 @@
 /* Contenedor principal */
 .create-event-container {
     margin-top: 2rem;
+    margin-bottom: 2rem;
   }
   
   /* Tarjeta del formulario */
   .create-event-card {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: #8a8989;
+    color: #4ce981;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
   
   /* Encabezado de la tarjeta */
   .create-event-header {
-    background-color: #3b82f6;
+    background-color: #102e8f;
     font-weight: bold;
     font-size: 1.5rem;
     text-align: center;
@@ -21,7 +22,7 @@
   
   /* Estilo para los campos de entrada de texto */
   .create-event-input {
-    background-color: #2d2d2d;
+    background-color: #172219;
     color: #ffffff;
     border: none;
     border-radius: 5px;

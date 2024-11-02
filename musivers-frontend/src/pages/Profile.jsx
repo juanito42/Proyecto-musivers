@@ -34,7 +34,7 @@ const Profile = () => {
   // Muestra un mensaje de carga mientras se obtienen los datos del perfil
   if (!profileData) {
     return (
-      <Container className="profile-container text-center">
+      <Container className="profile-container-perf text-center">
         <FontAwesomeIcon icon={faSpinner} spin size="2x" className="loading-spinner" />
         <p>Cargando perfil...</p>
         <Button
@@ -50,9 +50,9 @@ const Profile = () => {
   }
 
   return (
-    <Container className="profile-container">
-      <Card className="profile-card">
-        <Card.Header className="profile-header">
+    <Container className="profile-container-perf">
+      <Card className="profile-card-perf">
+        <Card.Header className="profile-header-perf">
           Perfil de {profileData.firstName}
         </Card.Header>
         <Card.Body>

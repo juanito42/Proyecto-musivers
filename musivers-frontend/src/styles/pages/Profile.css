@@ -1,24 +1,29 @@
 /* Contenedor principal de la página de perfil */
-.profile-container {
-    margin-top: 3rem;
+.profile-container-perf {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 100vh;
 }
 
 /* Tarjeta de perfil */
-.profile-card {
-    background-color: #4f8fcf;
+.profile-card-perf {
+    background-color: #68b6eb;
     border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
 }
 
 /* Encabezado de la tarjeta de perfil */
-.profile-header {
+.profile-header-perf {
     background-color: #333333;
-    color: #ffffff;
+    color: #aa68f5;
     text-align: center;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 2rem;
 }
 
 /* Botón para crear o editar perfil */
@@ -26,7 +31,14 @@
     background-color: #22b65b;
     border-radius: 10px;
     font-weight: bold;
-    color: #051225;
+    color: #7f06f0;
+    transition: background-color 0.3s ease;
+}
+
+/* Evitar que cambie a gris al hacer hover */
+.create-edit-profile-button:hover {
+    background-color: #9a3cf1; 
+    color: #ffffff; 
 }
 
 /* Estilo para el ícono de carga */

@@ -158,7 +158,7 @@ const CreateEventForm = () => {
                   {subcategories.length > 0 && (
                     <Dropdown onSelect={handleSubcategorySelect} className="mt-2">
                       <Dropdown.Toggle variant="warning" id="dropdown-subcategories" className="create-event-dropdown">
-                        Subcategorías de Festivales
+                        Festivales
                       </Dropdown.Toggle>
                       <Dropdown.Menu className="create-event-dropdown-menu">
                         {subcategories.map((subcategory, index) => (
