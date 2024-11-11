@@ -63,5 +63,33 @@
                 </div>
             {% endfor %}
         </div>
+
+        {# Controles de paginación #}
+        {% if totalPages > 1 %}
+            <nav aria-label="Navegación de eventos" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {# Botón "Anterior" #}
+                    <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                        <a class="page-link" href="{{ path('event_list', {'page': currentPage - 1, 'limit': limit}) }}" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    {# Botones para cada página #}
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {% if i == currentPage %}active{% endif %}">
+                            <a class="page-link" href="{{ path('event_list', {'page': i, 'limit': limit}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {# Botón "Siguiente" #}
+                    <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                        <a class="page-link" href="{{ path('event_list', {'page': currentPage + 1, 'limit': limit}) }}" aria-label="Siguiente">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 {% endblock %}

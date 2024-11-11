@@ -1,14 +1,14 @@
-// src/pages/EventsPage.jsx
-
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import '../styles/pages/EventsPage.css'; 
+import "../styles/pages/EventsPage.css";
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]); // Estado para almacenar los eventos
   const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
+  const [page, setPage] = useState(1); // Página actual
+  const [totalPages, setTotalPages] = useState(1); // Total de páginas
   const navigate = useNavigate(); // Hook para redirigir al usuario si es necesario
 
   // Función para obtener los eventos desde la API
@@ -21,13 +21,18 @@ const EventsPage = () => {
     }
 
     try {
-      const response = await axios.get("http://localhost:8000/api/events", {
-        headers: {
-          Authorization: `Bearer ${token}`, // Incluye el token en la cabecera de la solicitud
-        },
-      });
+      const response = await axios.get(
+        `http://localhost:8000/api/events?page=${page}&limit=20`, // URL con paginación
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Incluye el token en la cabecera de la solicitud
+          },
+        }
+      );
+
       console.log("Eventos obtenidos:", response.data);
-      setEvents(response.data); // Actualiza el estado con los datos de eventos obtenidos
+      setEvents(response.data.data); // Actualiza los eventos con los datos obtenidos
+      setTotalPages(response.data.totalPages); // Actualiza el número total de páginas
     } catch (error) {
       console.error("Error al obtener los eventos:", error);
       if (error.response && error.response.status === 401) {
@@ -36,11 +41,19 @@ const EventsPage = () => {
     } finally {
       setLoading(false); // Finaliza el estado de carga
     }
-  }, [navigate]);
+  }, [page, navigate]);
 
   useEffect(() => {
-    fetchEvents(); // Ejecuta la función para obtener eventos al montar el componente
+    fetchEvents(); // Ejecuta la función para obtener eventos al montar el componente o cambiar de página
   }, [fetchEvents]);
+
+  // Función para cambiar de página
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+      setLoading(true); // Muestra el estado de carga mientras se obtienen nuevos datos
+    }
+  };
 
   if (loading) {
     // Muestra un mensaje de carga mientras se obtienen los eventos
@@ -78,16 +91,14 @@ const EventsPage = () => {
                 </p>
                 <p className="card-text mt-auto event-card-date">
                   <small>
-                    {event.date ? dayjs(event.date).format("DD-MM-YYYY HH:mm") : "Fecha no disponible"}
+                    {event.date
+                      ? dayjs(event.date).format("DD-MM-YYYY HH:mm")
+                      : "Fecha no disponible"}
                   </small>
                 </p>
-
-                {/* Muestra la categoría del evento */}
                 <p className="card-text event-card-category">
                   <strong>Categoría:</strong> {event.category || "Categoría no disponible"}
                 </p>
-
-                {/* Botón para más información si el evento tiene URL */}
                 <div className="d-flex justify-content-between mt-2">
                   {event.url && (
                     <a
@@ -105,9 +116,29 @@ const EventsPage = () => {
           </div>
         ))}
       </div>
+      {/* Paginación */}
+      <div className="pagination-container text-center mt-4">
+        <button
+          className="btn btn-secondary me-2"
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+        >
+          Anterior
+        </button>
+        <span className="page-indicator">
+          Página {page} de {totalPages}
+        </span>
+        <button
+          className="btn btn-secondary ms-2"
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page === totalPages}
+        >
+          Siguiente
+        </button>
+      </div>
+        <br/>
     </div>
   );
 };
 
 export default EventsPage;
-
