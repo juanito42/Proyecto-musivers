@@ -142,3 +142,38 @@ save_profile:
 uploads:
     path: /uploads/photos
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect
+
+
+######################################
+############# RUTAS G_ROCK ###########
+
+api_grupos_rock_list:
+    path: /api/grupos-rock
+    controller: App\Controller\GruposRockController::listGruposRock
+    methods: GET
+
+grupos_rock_get:
+    path: /api/grupos-rock/{id}
+    controller: App\Controller\GruposRockController::getGrupoRock
+    methods: GET
+
+# Ruta para crear o actualizar
+grupos_rock_save:
+    path: /api/grupos-rock
+    controller: App\Controller\GruposRockController::saveGrupoRock
+    methods: [POST, PUT]
+
+grupos_rock_delete:
+    path: /api/grupos-rock/{id}
+    controller: App\Controller\GruposRockController::deleteGrupoRock
+    methods: DELETE
+
+grupos_rock_create_form:
+    path: /admin/grupos-rock/new
+    controller: App\Controller\GruposRockController::createGrupoRock
+    methods: [GET, POST]
+
+grupos_rock_list:
+    path: /grupos-rock
+    controller: App\Controller\GruposRockController::listGruposRock
+    methods: GET

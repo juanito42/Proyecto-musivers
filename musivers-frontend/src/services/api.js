@@ -84,5 +84,18 @@ export const saveProfile = async (profileData) => {
     throw error;
   }
 };
+
+// Obtener todos los grupos de rock
+export const getGruposRock = async () => {
+  try {
+    const response = await api.get('/api/grupos-rock');
+    console.log('Grupos de rock obtenidos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo los grupos de rock:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default api;
 

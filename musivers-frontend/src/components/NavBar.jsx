@@ -65,6 +65,9 @@ const NavBar = () => {
             <Nav.Link as={Link} to="/forums" className="nav-link-custom">
               FOROS
             </Nav.Link>
+            <Nav.Link as={Link} to="/grupos-rock" className="nav-link-custom">
+              GRUPOSROCK
+            </Nav.Link>
 
             {/* Botón para crear un evento (solo se muestra si el usuario está autenticado) */}
             {token && (

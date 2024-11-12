@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center">Grupos de Rock</h1>
+        <div class="row">
+            {% for grupo in grupos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ asset('uploads/photos/' ~ grupo.photoFilename) }}" class="card-img-top" alt="{{ grupo.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ grupo.name }}</h5>
+                            <p class="card-text">{{ grupo.biography }}</p>
+                            <a href="{{ grupo.officialWebsite }}" class="btn btn-primary" target="_blank">Visitar Sitio Oficial</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">No hay grupos de rock disponibles.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

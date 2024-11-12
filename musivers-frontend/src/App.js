@@ -12,6 +12,7 @@ import RegisterForm from './components/RegisterForm';
 import CategoryPage from './pages/CategoryPage'; 
 import CreateEventForm from './components/CreateEventForm'; 
 import ProfileForm from './components/ProfileForm';
+import GruposRockPage from './pages/GruposRockPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/profile_form" element={<ProfileForm />} />
           <Route path="/auth" element={<AuthForm />} />
           <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="/grupos-rock" element={<GruposRockPage />} />
         </Routes>
         <Footer />
       </Router>
