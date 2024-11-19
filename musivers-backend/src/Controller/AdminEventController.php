@@ -23,59 +23,58 @@ class AdminEventController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
     // Método para listar eventos filtrados por categoría en formato JSON para la API
     #[Route('/api/events', name: 'api_events', methods: ['GET'])]
-public function listEventsApi(Request $request): JsonResponse
-{
-    // Obtener parámetros de consulta para paginación y categoría
-    $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto, 1)
-    $limit = max(1, $request->query->getInt('limit', 20)); // Límite de eventos por página (por defecto, 20)
-    $category = $request->query->get('category'); // Categoría (opcional)
+    public function listEventsApi(Request $request): JsonResponse
+    {
+        // Obtener parámetros de consulta para paginación y categoría
+        $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto, 1)
+        $limit = max(1, $request->query->getInt('limit', 20)); // Límite de eventos por página (por defecto, 20)
+        $category = $request->query->get('category'); // Categoría (opcional)
 
-    $repository = $this->entityManager->getRepository(Event::class);
-    $queryBuilder = $repository->createQueryBuilder('e');
+        $repository = $this->entityManager->getRepository(Event::class);
+        $queryBuilder = $repository->createQueryBuilder('e');
 
-    // Filtrar por categoría si se proporciona
-    if ($category) {
-        $queryBuilder->where('e.category = :category')
-                     ->setParameter('category', $category);
+        // Filtrar por categoría si se proporciona
+        if ($category) {
+            $queryBuilder->where('e.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        // Contar el total de eventos (sin paginación)
+        $totalEvents = $queryBuilder->select('COUNT(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Aplicar límites y desplazamiento para la paginación
+        $events = $queryBuilder->select('e')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        // Estructurar los datos de los eventos para devolver en JSON
+        $eventData = array_map(fn(Event $event) => [
+            'id' => $event->getId(),
+            'title' => $event->getTitle(),
+            'description' => $event->getDescription(),
+            'date' => $event->getDate()->format('Y-m-d H:i'),
+            'category' => $event->getCategory(),
+            'url' => $event->getUrl(),
+            'photoFilename' => $event->getPhotoFilename(),
+        ], $events);
+
+        // Devolver los datos paginados
+        return new JsonResponse([
+            'data' => $eventData,
+            'total' => (int)$totalEvents, // Total de eventos disponibles
+            'page' => $page, // Página actual
+            'limit' => $limit, // Límite por página
+            'totalPages' => ceil($totalEvents / $limit), // Total de páginas
+        ]);
     }
-
-    // Contar el total de eventos (sin paginación)
-    $totalEvents = $queryBuilder->select('COUNT(e.id)')
-                                ->getQuery()
-                                ->getSingleScalarResult();
-
-    // Aplicar límites y desplazamiento para la paginación
-    $events = $queryBuilder->select('e')
-                           ->setFirstResult(($page - 1) * $limit)
-                           ->setMaxResults($limit)
-                           ->getQuery()
-                           ->getResult();
-
-    // Estructurar los datos de los eventos para devolver en JSON
-    $eventData = array_map(fn(Event $event) => [
-        'id' => $event->getId(),
-        'title' => $event->getTitle(),
-        'description' => $event->getDescription(),
-        'date' => $event->getDate()->format('Y-m-d H:i'),
-        'category' => $event->getCategory(),
-        'url' => $event->getUrl(),
-        'photoFilename' => $event->getPhotoFilename(),
-    ], $events);
-
-    // Devolver los datos paginados
-    return new JsonResponse([
-        'data' => $eventData,
-        'total' => (int)$totalEvents, // Total de eventos disponibles
-        'page' => $page, // Página actual
-        'limit' => $limit, // Límite por página
-        'totalPages' => ceil($totalEvents / $limit), // Total de páginas
-    ]);
-}
 
 
     // Método para devolver las categorías en formato JSON
@@ -239,38 +238,38 @@ public function listEventsApi(Request $request): JsonResponse
 
     // Método para listar eventos en una vista HTML
     #[Route('/events', name: 'event_list', methods: ['GET'])]
-public function listEvents(Request $request): Response
-{
-    // Parámetros para la paginación
-    $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto, 1)
-    $limit = max(1, min($request->query->getInt('limit', 20), 100)); // Límite por página (20 por defecto, 100 máximo)
+    public function listEvents(Request $request): Response
+    {
+        // Parámetros para la paginación
+        $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto, 1)
+        $limit = max(1, min($request->query->getInt('limit', 20), 100)); // Límite por página (20 por defecto, 100 máximo)
 
-    $repository = $this->entityManager->getRepository(Event::class);
-    $queryBuilder = $repository->createQueryBuilder('e');
+        $repository = $this->entityManager->getRepository(Event::class);
+        $queryBuilder = $repository->createQueryBuilder('e');
 
-    // Contar el total de eventos
-    $totalEvents = $queryBuilder->select('COUNT(e.id)')
-                                ->getQuery()
-                                ->getSingleScalarResult();
+        // Contar el total de eventos
+        $totalEvents = $queryBuilder->select('COUNT(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
 
-    // Obtener los eventos de la página actual
-    $events = $queryBuilder->select('e')
-                           ->setFirstResult(($page - 1) * $limit) // Desplazamiento
-                           ->setMaxResults($limit) // Límite por página
-                           ->getQuery()
-                           ->getResult();
+        // Obtener los eventos de la página actual
+        $events = $queryBuilder->select('e')
+            ->setFirstResult(($page - 1) * $limit) // Desplazamiento
+            ->setMaxResults($limit) // Límite por página
+            ->getQuery()
+            ->getResult();
 
-    // Calcular el total de páginas
-    $totalPages = ceil($totalEvents / $limit);
+        // Calcular el total de páginas
+        $totalPages = ceil($totalEvents / $limit);
 
-    // Renderizar la vista con los datos de paginación
-    return $this->render('event/list.html.twig', [
-        'events' => $events,
-        'currentPage' => $page,
-        'totalPages' => $totalPages,
-        'limit' => $limit,
-    ]);
-}
+        // Renderizar la vista con los datos de paginación
+        return $this->render('event/list.html.twig', [
+            'events' => $events,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'limit' => $limit,
+        ]);
+    }
 
     // Método para renderizar el formulario de creación de eventos en una página HTML
     #[Route('/admin/events/new', name: 'admin_create_event_form', methods: ['GET'])]
@@ -354,6 +353,4 @@ public function listEvents(Request $request): Response
 
         return new JsonResponse(['message' => 'Evento creado correctamente'], 200);
     }
-
-
 }

@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary">Editar Grupo de Rock</h1>
+
+        {% for label, messages in app.flashes %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3 class="mb-0">Formulario de Edición</h3>
+                    </div>
+                    <div class="card-body p-5">
+                        {{ form_start(form, {
+                            'attr': {
+                                'class': 'needs-validation',
+                                'novalidate': 'novalidate',
+                                'enctype': 'multipart/form-data'
+                            }
+                        }) }}
+
+                        <!-- Campo Nombre -->
+                        <div class="mb-3">
+                            {{ form_label(form.name, 'Nombre del Grupo', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.name, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Escribe el nombre del grupo'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Biografía -->
+                        <div class="mb-3">
+                            {{ form_label(form.biography, 'Biografía', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.biography, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Escribe una biografía del grupo'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Fecha de Formación -->
+                        <div class="mb-3">
+                            {{ form_label(form.formationDate, 'Fecha de Formación', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.formationDate, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Foto -->
+                        <div class="mb-3">
+                            {{ form_label(form.photo, 'Foto del Grupo', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.photo, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Sitio Oficial -->
+                        <div class="mb-3">
+                            {{ form_label(form.officialWebsite, 'Sitio Oficial', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.officialWebsite, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Enlace al sitio oficial del grupo'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Álbumes -->
+                        <div class="mb-3">
+                            {{ form_label(form.albums, 'Álbumes', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.albums, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Lista de álbumes (separados por comas)'
+                                }
+                            }) }}
+                        </div>
+
+                        <!-- Campo Miembros -->
+                        <div class="mb-3">
+                            {{ form_label(form.members, 'Miembros', { 'label_attr': { 'class': 'form-label' } }) }}
+                            {{ form_widget(form.members, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Lista de miembros (separados por comas)'
+                                }
+                            }) }}
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

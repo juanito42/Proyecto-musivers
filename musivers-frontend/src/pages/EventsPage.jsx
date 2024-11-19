@@ -30,7 +30,6 @@ const EventsPage = () => {
         }
       );
 
-      console.log("Eventos obtenidos:", response.data);
       setEvents(response.data.data); // Actualiza los eventos con los datos obtenidos
       setTotalPages(response.data.totalPages); // Actualiza el número total de páginas
     } catch (error) {

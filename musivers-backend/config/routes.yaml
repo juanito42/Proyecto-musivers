@@ -163,17 +163,23 @@ grupos_rock_save:
     controller: App\Controller\GruposRockController::saveGrupoRock
     methods: [POST, PUT]
 
-grupos_rock_delete:
-    path: /api/grupos-rock/{id}
+delete_grupos_rock:
+    path: /admin/grupos-rock/delete/{id}
     controller: App\Controller\GruposRockController::deleteGrupoRock
-    methods: DELETE
+    methods: POST
+
+edit_grupos_rock:
+    path: /admin/grupos-rock/edit/{id}
+    controller: App\Controller\GruposRockController::editGrupoRock
+    methods: [GET, POST]
 
 grupos_rock_create_form:
     path: /admin/grupos-rock/new
     controller: App\Controller\GruposRockController::createGrupoRock
     methods: [GET, POST]
 
-grupos_rock_list:
+list_grupos_rock:
     path: /grupos-rock
-    controller: App\Controller\GruposRockController::listGruposRock
+    controller: App\Controller\GruposRockController::listGruposRockView
     methods: GET
+

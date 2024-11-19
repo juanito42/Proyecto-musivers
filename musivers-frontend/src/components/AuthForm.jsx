@@ -83,6 +83,7 @@ const AuthForm = () => {
                     Registrarse
                 </button>
             </div>
+            <br />
         </div>
     );
 };

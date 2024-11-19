@@ -25,10 +25,23 @@ class GruposRockController extends AbstractController
     ) {}
 
     #[Route('/api/grupos-rock', name: 'list_grupos_rock', methods: ['GET'])]
-    public function listGruposRock(): JsonResponse
+    public function listGruposRock(Request $request): JsonResponse
     {
-        // No necesitas validación aquí si la ruta es pública
-        $grupos = $this->entityManager->getRepository(GruposRock::class)->findAll();
+        $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto 1)
+        $limit = max(1, $request->query->getInt('limit', 1)); // Límite por página (por defecto 1)
+
+        $repository = $this->entityManager->getRepository(GruposRock::class);
+        $queryBuilder = $repository->createQueryBuilder('g');
+
+        // Total de grupos disponibles
+        $totalGrupos = $queryBuilder->select('COUNT(g.id)')->getQuery()->getSingleScalarResult();
+
+        // Grupos para la página actual
+        $grupos = $queryBuilder->select('g')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
 
         $data = array_map(fn(GruposRock $grupo) => [
             'id' => $grupo->getId(),
@@ -41,7 +54,13 @@ class GruposRockController extends AbstractController
             'formationDate' => $grupo->getFormationDate()?->format('Y-m-d'),
         ], $grupos);
 
-        return new JsonResponse($data);
+        return new JsonResponse([
+            'grupos' => $data,
+            'total' => (int) $totalGrupos,
+            'page' => $page,
+            'limit' => $limit,
+            'totalPages' => ceil($totalGrupos / $limit),
+        ]);
     }
 
 
@@ -105,37 +124,130 @@ class GruposRockController extends AbstractController
         return new JsonResponse(['message' => 'Grupo guardado correctamente.']);
     }
 
-    // Método para eliminar un grupo de rock
-    #[Route('/api/grupos-rock/{id}', name: 'delete_grupo_rock', methods: ['DELETE'])]
-    public function deleteGrupoRock(int $id): JsonResponse
+    #[Route('/admin/grupos-rock/delete/{id}', name: 'delete_grupos_rock', methods: ['POST'])]
+    public function deleteGrupoRock(Request $request, GruposRock $grupo): Response
     {
-        $grupo = $this->entityManager->getRepository(GruposRock::class)->find($id);
+        $csrfToken = $request->request->get('_csrf_token');
 
-        if (!$grupo) {
-            return new JsonResponse(['error' => 'Grupo no encontrado'], 404);
+        if (!$this->isCsrfTokenValid('delete' . $grupo->getId(), $csrfToken)) {
+            $this->addFlash('error', 'Token CSRF inválido.');
+            return $this->redirectToRoute('list_grupos_rock');
         }
 
         $this->entityManager->remove($grupo);
         $this->entityManager->flush();
 
-        return new JsonResponse(['message' => 'Grupo eliminado correctamente.']);
+        $this->addFlash('success', 'Grupo eliminado con éxito.');
+        return $this->redirectToRoute('list_grupos_rock');
     }
 
     #[Route('/admin/grupos-rock/new', name: 'create_grupo_rock', methods: ['GET', 'POST'])]
-public function createGrupoRock(Request $request): Response
-{
-    $grupo = new GruposRock();
+    public function createGrupoRock(Request $request): Response
+    {
+        $grupo = new GruposRock();
 
-    // Crear el formulario para la creación
+        // Crear el formulario para la creación
+        $form = $this->createFormBuilder($grupo)
+            ->add('name', TextType::class, [
+                'label' => 'Nombre del Grupo',
+                'required' => true,
+            ])
+            ->add('biography', TextareaType::class, [
+                'label' => 'Biografía',
+                'required' => true,
+            ])
+            ->add('formationDate', DateType::class, [
+                'label' => 'Fecha de Formación',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('photo', FileType::class, [
+                'label' => 'Foto del Grupo',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('officialWebsite', UrlType::class, [
+                'label' => 'Sitio Oficial',
+                'required' => false,
+            ])
+            ->add('albums', TextareaType::class, [
+                'label' => 'Álbumes (separados por comas)',
+                'required' => false,
+            ])
+            ->add('members', TextareaType::class, [
+                'label' => 'Miembros (separados por comas)',
+                'required' => false,
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Manejo de la foto si se sube
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                    $grupo->setPhotoFilename($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir la foto');
+                }
+            }
+
+            // Guardar el grupo en la base de datos
+            $this->entityManager->persist($grupo);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Grupo creado exitosamente');
+            return $this->redirectToRoute('list_grupos_rock');
+        }
+
+        return $this->render('grupos_rock/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    // Método para listar grupos de rock en una vista HTML con paginación
+    #[Route('/grupos-rock', name: 'list_grupos_rock', methods: ['GET'])]
+    public function listGruposRockView(Request $request): Response
+    {
+        $page = max(1, $request->query->getInt('page', 1)); // Página actual (por defecto 1)
+        $limit = max(1, $request->query->getInt('limit', 6)); // Límite por página (por defecto 6)
+
+        $repository = $this->entityManager->getRepository(GruposRock::class);
+        $queryBuilder = $repository->createQueryBuilder('g');
+
+        // Total de grupos disponibles
+        $totalGrupos = $queryBuilder->select('COUNT(g.id)')->getQuery()->getSingleScalarResult();
+
+        // Grupos para la página actual
+        $grupos = $queryBuilder->select('g')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        // Renderizar la plantilla Twig
+        return $this->render('grupos_rock/list.html.twig', [
+            'grupos' => $grupos,
+            'totalGrupos' => $totalGrupos,
+            'currentPage' => $page,
+            'limit' => $limit,
+            'totalPages' => ceil($totalGrupos / $limit),
+        ]);
+    }
+
+    #[Route('/admin/grupos-rock/edit/{id}', name: 'edit_grupos_rock', methods: ['GET', 'POST'])]
+public function editGrupoRock(Request $request, GruposRock $grupo): Response
+{
     $form = $this->createFormBuilder($grupo)
-        ->add('name', TextType::class, [
-            'label' => 'Nombre del Grupo',
-            'required' => true,
-        ])
-        ->add('biography', TextareaType::class, [
-            'label' => 'Biografía',
-            'required' => true,
-        ])
+        ->add('name', TextType::class, ['label' => 'Nombre del Grupo'])
+        ->add('biography', TextareaType::class, ['label' => 'Biografía'])
         ->add('formationDate', DateType::class, [
             'label' => 'Fecha de Formación',
             'widget' => 'single_text',
@@ -143,7 +255,7 @@ public function createGrupoRock(Request $request): Response
         ])
         ->add('photo', FileType::class, [
             'label' => 'Foto del Grupo',
-            'mapped' => false,
+            'mapped' => false, // No está directamente asociado con la entidad
             'required' => false,
         ])
         ->add('officialWebsite', UrlType::class, [
@@ -153,18 +265,20 @@ public function createGrupoRock(Request $request): Response
         ->add('albums', TextareaType::class, [
             'label' => 'Álbumes (separados por comas)',
             'required' => false,
+            'mapped' => false, // Este campo se procesará manualmente
         ])
         ->add('members', TextareaType::class, [
             'label' => 'Miembros (separados por comas)',
             'required' => false,
+            'mapped' => false, // Este campo se procesará manualmente
         ])
-        ->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
+        ->add('save', SubmitType::class, ['label' => 'Guardar Cambios'])
         ->getForm();
 
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Manejo de la foto si se sube
+        // Manejo de la foto (opcional)
         $photoFile = $form->get('photo')->getData();
         if ($photoFile) {
             $newFilename = uniqid() . '.' . $photoFile->guessExtension();
@@ -175,20 +289,28 @@ public function createGrupoRock(Request $request): Response
                 );
                 $grupo->setPhotoFilename($newFilename);
             } catch (FileException $e) {
-                $this->addFlash('error', 'Error al subir la foto');
+                $this->addFlash('error', 'Error al subir la foto.');
             }
         }
 
-        // Guardar el grupo en la base de datos
-        $this->entityManager->persist($grupo);
-        $this->entityManager->flush();
+        // Procesar el campo "albums"
+        $albumsInput = $form->get('albums')->getData();
+        $albumsArray = $albumsInput ? array_map('trim', explode(',', $albumsInput)) : [];
+        $grupo->setAlbums($albumsArray);
 
-        $this->addFlash('success', 'Grupo creado exitosamente');
+        // Procesar el campo "members"
+        $membersInput = $form->get('members')->getData();
+        $membersArray = $membersInput ? array_map('trim', explode(',', $membersInput)) : [];
+        $grupo->setMembers($membersArray);
+
+        $this->entityManager->flush();
+        $this->addFlash('success', 'Grupo actualizado con éxito.');
         return $this->redirectToRoute('list_grupos_rock');
     }
 
-    return $this->render('grupos_rock/create.html.twig', [
+    return $this->render('grupos_rock/edit.html.twig', [
         'form' => $form->createView(),
+        'grupo' => $grupo,
     ]);
 }
 

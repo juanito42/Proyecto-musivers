@@ -2,22 +2,74 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="text-center">Grupos de Rock</h1>
+        <h1 class="text-center mb-4">Grupos de Rock</h1>
         <div class="row">
             {% for grupo in grupos %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="{{ asset('uploads/photos/' ~ grupo.photoFilename) }}" class="card-img-top" alt="{{ grupo.name }}">
-                        <div class="card-body">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-container">
+                            {% if grupo.photoFilename %}
+                                <img 
+                                    src="{{ asset('uploads/photos/' ~ grupo.photoFilename) }}" 
+                                    class="card-img-top img-fluid" 
+                                    alt="{{ grupo.name }}" 
+                                    style="object-fit: cover; height: 200px; width: 100%;">
+                            {% else %}
+                                <img 
+                                    src="{{ asset('uploads/photos/default-group.jpg') }}" 
+                                    class="card-img-top img-fluid" 
+                                    alt="Sin imagen" 
+                                    style="object-fit: cover; height: 200px; width: 100%;">
+                            {% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ grupo.name }}</h5>
                             <p class="card-text">{{ grupo.biography }}</p>
-                            <a href="{{ grupo.officialWebsite }}" class="btn btn-primary" target="_blank">Visitar Sitio Oficial</a>
+                            <p class="card-text">
+                                <strong>Fecha de Formación:</strong> 
+                                {{ grupo.formationDate ? grupo.formationDate|date('Y-m-d') : 'Desconocida' }}
+                            </p>
+                            
+                            <div class="mt-auto d-flex justify-content-between">
+                                <a href="{{ path('edit_grupos_rock', {id: grupo.id}) }}" class="btn btn-primary btn-sm">
+                                    Editar
+                                </a>
+                                <form action="{{ path('delete_grupos_rock', {id: grupo.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este grupo?');">
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete' ~ grupo.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             {% else %}
-                <p class="text-center">No hay grupos de rock disponibles.</p>
+                <div class="col-12">
+                    <p class="text-center">No hay grupos disponibles en este momento.</p>
+                </div>
             {% endfor %}
         </div>
+
+        {# Paginación #}
+        {% if totalPages > 1 %}
+            <nav aria-label="Navegación de grupos de rock" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                        <a class="page-link" href="{{ path('list_grupos_rock', {'page': currentPage - 1, 'limit': limit}) }}" aria-label="Anterior">
+                            &laquo;
+                        </a>
+                    </li>
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {% if i == currentPage %}active{% endif %}">
+                            <a class="page-link" href="{{ path('list_grupos_rock', {'page': i, 'limit': limit}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                        <a class="page-link" href="{{ path('list_grupos_rock', {'page': currentPage + 1, 'limit': limit}) }}" aria-label="Siguiente">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 {% endblock %}
