@@ -243,75 +243,80 @@ class GruposRockController extends AbstractController
     }
 
     #[Route('/admin/grupos-rock/edit/{id}', name: 'edit_grupos_rock', methods: ['GET', 'POST'])]
-public function editGrupoRock(Request $request, GruposRock $grupo): Response
-{
-    $form = $this->createFormBuilder($grupo)
-        ->add('name', TextType::class, ['label' => 'Nombre del Grupo'])
-        ->add('biography', TextareaType::class, ['label' => 'Biografía'])
-        ->add('formationDate', DateType::class, [
-            'label' => 'Fecha de Formación',
-            'widget' => 'single_text',
-            'required' => false,
-        ])
-        ->add('photo', FileType::class, [
-            'label' => 'Foto del Grupo',
-            'mapped' => false, // No está directamente asociado con la entidad
-            'required' => false,
-        ])
-        ->add('officialWebsite', UrlType::class, [
-            'label' => 'Sitio Oficial',
-            'required' => false,
-        ])
-        ->add('albums', TextareaType::class, [
-            'label' => 'Álbumes (separados por comas)',
-            'required' => false,
-            'mapped' => false, // Este campo se procesará manualmente
-        ])
-        ->add('members', TextareaType::class, [
-            'label' => 'Miembros (separados por comas)',
-            'required' => false,
-            'mapped' => false, // Este campo se procesará manualmente
-        ])
-        ->add('save', SubmitType::class, ['label' => 'Guardar Cambios'])
-        ->getForm();
+    public function editGrupoRock(Request $request, GruposRock $grupo): Response
+    {
+        // Convertir álbumes y miembros en cadenas para precargar en el formulario
+        $albumsAsString = $grupo->getAlbums() ? implode(', ', $grupo->getAlbums()) : '';
+        $membersAsString = $grupo->getMembers() ? implode(', ', $grupo->getMembers()) : '';
 
-    $form->handleRequest($request);
+        $form = $this->createFormBuilder($grupo)
+            ->add('name', TextType::class, ['label' => 'Nombre del Grupo'])
+            ->add('biography', TextareaType::class, ['label' => 'Biografía'])
+            ->add('formationDate', DateType::class, [
+                'label' => 'Fecha de Formación',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('photo', FileType::class, [
+                'label' => 'Foto del Grupo',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('officialWebsite', UrlType::class, [
+                'label' => 'Sitio Oficial',
+                'required' => false,
+            ])
+            ->add('albums', TextareaType::class, [
+                'label' => 'Álbumes (separados por comas)',
+                'required' => false,
+                'mapped' => false,
+                'data' => $albumsAsString, // Precargar álbumes
+            ])
+            ->add('members', TextareaType::class, [
+                'label' => 'Miembros (separados por comas)',
+                'required' => false,
+                'mapped' => false,
+                'data' => $membersAsString, // Precargar miembros
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Guardar Cambios'])
+            ->getForm();
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Manejo de la foto (opcional)
-        $photoFile = $form->get('photo')->getData();
-        if ($photoFile) {
-            $newFilename = uniqid() . '.' . $photoFile->guessExtension();
-            try {
-                $photoFile->move(
-                    $this->getParameter('photos_directory'),
-                    $newFilename
-                );
-                $grupo->setPhotoFilename($newFilename);
-            } catch (FileException $e) {
-                $this->addFlash('error', 'Error al subir la foto.');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Manejo de la foto (opcional)
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                    $grupo->setPhotoFilename($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir la foto.');
+                }
             }
+
+            // Procesar el campo "albums"
+            $albumsInput = $form->get('albums')->getData();
+            $albumsArray = $albumsInput ? array_map('trim', explode(',', $albumsInput)) : [];
+            $grupo->setAlbums($albumsArray);
+
+            // Procesar el campo "members"
+            $membersInput = $form->get('members')->getData();
+            $membersArray = $membersInput ? array_map('trim', explode(',', $membersInput)) : [];
+            $grupo->setMembers($membersArray);
+
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Grupo actualizado con éxito.');
+            return $this->redirectToRoute('list_grupos_rock');
         }
 
-        // Procesar el campo "albums"
-        $albumsInput = $form->get('albums')->getData();
-        $albumsArray = $albumsInput ? array_map('trim', explode(',', $albumsInput)) : [];
-        $grupo->setAlbums($albumsArray);
-
-        // Procesar el campo "members"
-        $membersInput = $form->get('members')->getData();
-        $membersArray = $membersInput ? array_map('trim', explode(',', $membersInput)) : [];
-        $grupo->setMembers($membersArray);
-
-        $this->entityManager->flush();
-        $this->addFlash('success', 'Grupo actualizado con éxito.');
-        return $this->redirectToRoute('list_grupos_rock');
+        return $this->render('grupos_rock/edit.html.twig', [
+            'form' => $form->createView(),
+            'grupo' => $grupo,
+        ]);
     }
-
-    return $this->render('grupos_rock/edit.html.twig', [
-        'form' => $form->createView(),
-        'grupo' => $grupo,
-    ]);
-}
-
 }

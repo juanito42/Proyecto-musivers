@@ -29,7 +29,32 @@
                                 <strong>Fecha de Formación:</strong> 
                                 {{ grupo.formationDate ? grupo.formationDate|date('Y-m-d') : 'Desconocida' }}
                             </p>
-                            
+                            <p class="card-text">
+                                <strong>Miembros:</strong>
+                                <ul>
+                                    {% for member in grupo.members %}
+                                        <li>{{ member }}</li>
+                                    {% else %}
+                                        <li>No hay miembros registrados.</li>
+                                    {% endfor %}
+                                </ul>
+                            </p>
+                            <p class="card-text">
+                                <strong>Álbumes:</strong>
+                                <ul>
+                                    {% for album in grupo.albums %}
+                                        <li>{{ album }}</li>
+                                    {% else %}
+                                        <li>No hay álbumes registrados.</li>
+                                    {% endfor %}
+                                </ul>
+                            </p>
+                            {% if grupo.officialWebsite %}
+                                <p class="card-text">
+                                    <strong>Sitio Oficial:</strong>
+                                    <a href="{{ grupo.officialWebsite }}" target="_blank">{{ grupo.officialWebsite }}</a>
+                                </p>
+                            {% endif %}
                             <div class="mt-auto d-flex justify-content-between">
                                 <a href="{{ path('edit_grupos_rock', {id: grupo.id}) }}" class="btn btn-primary btn-sm">
                                     Editar
