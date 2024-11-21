@@ -142,75 +142,60 @@ class GruposRockController extends AbstractController
     }
 
     #[Route('/admin/grupos-rock/new', name: 'create_grupo_rock', methods: ['GET', 'POST'])]
-    public function createGrupoRock(Request $request): Response
-    {
-        $grupo = new GruposRock();
+public function createGrupoRock(Request $request): Response
+{
+    $grupo = new GruposRock();
 
-        // Crear el formulario para la creación
-        $form = $this->createFormBuilder($grupo)
-            ->add('name', TextType::class, [
-                'label' => 'Nombre del Grupo',
-                'required' => true,
-            ])
-            ->add('biography', TextareaType::class, [
-                'label' => 'Biografía',
-                'required' => true,
-            ])
-            ->add('formationDate', DateType::class, [
-                'label' => 'Fecha de Formación',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('photo', FileType::class, [
-                'label' => 'Foto del Grupo',
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('officialWebsite', UrlType::class, [
-                'label' => 'Sitio Oficial',
-                'required' => false,
-            ])
-            ->add('albums', TextareaType::class, [
-                'label' => 'Álbumes (separados por comas)',
-                'required' => false,
-            ])
-            ->add('members', TextareaType::class, [
-                'label' => 'Miembros (separados por comas)',
-                'required' => false,
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
-            ->getForm();
+    $form = $this->createFormBuilder($grupo)
+        ->add('name', TextType::class, ['label' => 'Nombre del Grupo', 'required' => true])
+        ->add('biography', TextareaType::class, ['label' => 'Biografía', 'required' => true])
+        ->add('formationDate', DateType::class, ['label' => 'Fecha de Formación', 'widget' => 'single_text', 'required' => false])
+        ->add('photo', FileType::class, ['label' => 'Foto del Grupo', 'mapped' => false, 'required' => false])
+        ->add('officialWebsite', UrlType::class, ['label' => 'Sitio Oficial', 'required' => false])
+        ->add('albums', TextareaType::class, ['label' => 'Álbumes (separados por comas)', 'mapped' => false, 'required' => false])
+        ->add('members', TextareaType::class, ['label' => 'Miembros (separados por comas)', 'mapped' => false, 'required' => false])
+        ->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
+        ->getForm();
 
-        $form->handleRequest($request);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Manejo de la foto si se sube
-            $photoFile = $form->get('photo')->getData();
-            if ($photoFile) {
-                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
-                try {
-                    $photoFile->move(
-                        $this->getParameter('photos_directory'),
-                        $newFilename
-                    );
-                    $grupo->setPhotoFilename($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Error al subir la foto');
-                }
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Manejo de la foto si se sube
+        $photoFile = $form->get('photo')->getData();
+        if ($photoFile) {
+            $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+            try {
+                $photoFile->move(
+                    $this->getParameter('photos_directory'),
+                    $newFilename
+                );
+                $grupo->setPhotoFilename($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Error al subir la foto');
             }
-
-            // Guardar el grupo en la base de datos
-            $this->entityManager->persist($grupo);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Grupo creado exitosamente');
-            return $this->redirectToRoute('list_grupos_rock');
         }
 
-        return $this->render('grupos_rock/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        // Procesar los campos "albums" y "members" como arrays
+        $albumsInput = $form->get('albums')->getData();
+        $albumsArray = $albumsInput ? array_map('trim', explode(',', $albumsInput)) : [];
+        $grupo->setAlbums($albumsArray);
+
+        $membersInput = $form->get('members')->getData();
+        $membersArray = $membersInput ? array_map('trim', explode(',', $membersInput)) : [];
+        $grupo->setMembers($membersArray);
+
+        $this->entityManager->persist($grupo);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Grupo creado exitosamente');
+        return $this->redirectToRoute('list_grupos_rock');
     }
+
+    return $this->render('grupos_rock/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
 
     // Método para listar grupos de rock en una vista HTML con paginación
     #[Route('/grupos-rock', name: 'list_grupos_rock', methods: ['GET'])]

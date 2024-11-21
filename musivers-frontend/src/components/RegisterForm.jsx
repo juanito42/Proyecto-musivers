@@ -92,6 +92,7 @@ const RegisterForm = () => {
                     {loading ? 'Registrando...' : 'Registrarse'}
                 </button>
             </form>
+            <br />
         </div>
     );
 };

@@ -6,6 +6,8 @@
     border-radius: 15px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
     color: #ffffff;
+    padding-bottom: 2rem; /* Espacio interno debajo */
+    margin-bottom: 2rem; /* Espacio externo debajo */
 }
 
 /* Título del formulario */

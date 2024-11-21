@@ -116,4 +116,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getEmailUsername(): string
+{
+    return strstr($this->email, '@', true); // Retorna todo antes del @
+}
+
 }

@@ -3,24 +3,24 @@ import { getGruposRock } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 const GruposRockPage = () => {
-  const [grupo, setGrupo] = useState(null);
+  const [grupos, setGrupos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchGrupoRock = async (page) => {
+  const fetchGruposRock = async (page) => {
     try {
       setLoading(true);
-      const response = await getGruposRock(page, 1);
+      const response = await getGruposRock(page, 2); // Mostrar 2 grupos por página
       if (response.grupos && response.grupos.length > 0) {
-        setGrupo(response.grupos[0]);
+        setGrupos(response.grupos);
       } else {
-        setGrupo(null);
+        setGrupos([]);
       }
       setTotalPages(response.totalPages);
     } catch (error) {
-      console.error("Error al cargar el grupo de rock:", error);
+      console.error("Error al cargar los grupos de rock:", error);
       if (error.response && error.response.status === 401) {
         navigate("/auth");
       }
@@ -30,7 +30,7 @@ const GruposRockPage = () => {
   };
 
   useEffect(() => {
-    fetchGrupoRock(currentPage);
+    fetchGruposRock(currentPage);
   }, [currentPage]);
 
   const handleNextPage = () => {
@@ -46,63 +46,81 @@ const GruposRockPage = () => {
   };
 
   if (loading) {
-    return <p>Cargando grupo de rock...</p>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <p>Cargando grupos de rock...</p>
+      </div>
+    );
   }
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Grupos de Rock</h1>
-      {grupo ? (
-        <div className="card shadow-lg border-0">
-          <div className="card-img-top-container">
-            {grupo.photoFilename && (
-              <img
-                src={`http://localhost:8000/uploads/photos/${grupo.photoFilename}`}
-                alt={grupo.name}
-                className="card-img-top img-fluid"
-                style={{ width: "100%", height: "auto", display: "block" }}
-              />
-            )}
-          </div>
-          <div className="card-body">
-            <h2 className="card-title text-primary">{grupo.name}</h2>
-            <p className="card-text">{grupo.biography}</p>
-            {grupo.formationDate && (
-              <p className="card-text">
-                <strong>Fecha de Formación:</strong> {grupo.formationDate}
-              </p>
-            )}
-            {grupo.officialWebsite && (
-              <a
-                href={grupo.officialWebsite}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary mt-3"
-              >
-                Visitar Sitio Oficial
-              </a>
-            )}
-            <div className="mt-4">
-              <h5>Álbumes:</h5>
-              <ul>
-                {(grupo.albums || []).map((album, index) => (
-                  <li key={index}>{album}</li> 
-                ))}
-              </ul>
+      <div className="row justify-content-center">
+        {grupos.length > 0 ? (
+          grupos.map((grupo, index) => (
+            <div
+              className="col-md-6 mb-4 d-flex justify-content-center"
+              key={grupo.id || index}
+            >
+              <div className="card shadow-lg border-0" style={{ width: "90%" }}>
+                <div className="card-img-top-container">
+                  {grupo.photoFilename && (
+                    <img
+                      src={`http://localhost:8000/uploads/photos/${grupo.photoFilename}`}
+                      alt={grupo.name}
+                      className="card-img-top img-fluid"
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  )}
+                </div>
+                <div className="card-body">
+                  <h2 className="card-title text-primary text-center">
+                    {grupo.name}
+                  </h2>
+                  <p className="card-text text-center">{grupo.biography}</p>
+                  {grupo.formationDate && (
+                    <p className="card-text text-center">
+                      <strong>Fecha de Formación:</strong>{" "}
+                      {grupo.formationDate}
+                    </p>
+                  )}
+                  {grupo.officialWebsite && (
+                    <div className="text-center">
+                      <a
+                        href={grupo.officialWebsite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-primary mt-3"
+                      >
+                        Visitar Sitio Oficial
+                      </a>
+                    </div>
+                  )}
+                  <div className="mt-4">
+                    <h5>Álbumes:</h5>
+                    <p>
+                      {(grupo.albums || [])
+                        .filter((album) => album) // Filtra valores nulos o vacíos
+                        .join(", ") || "No hay álbumes disponibles."}
+                    </p>
+                  </div>
+                  <div className="mt-4">
+                    <h5>Miembros:</h5>
+                    <p>
+                      {(grupo.members || [])
+                        .filter((member) => member) // Filtra valores nulos o vacíos
+                        .join(", ") || "No hay miembros disponibles."}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="mt-4">
-              <h5>Miembros:</h5>
-              <ul>
-                {(grupo.members || []).map((member, index) => (
-                  <li key={index}>{member}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <p>No hay grupo disponible.</p>
-      )}
+          ))
+        ) : (
+          <p className="text-center">No hay grupos disponibles.</p>
+        )}
+      </div>
       <div className="d-flex justify-content-between mt-4">
         <button
           className="btn btn-secondary"

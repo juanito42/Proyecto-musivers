@@ -12,23 +12,31 @@ const CategoryPage = () => {
 
   // Función para obtener eventos de una categoría específica
   const fetchEventsByCategory = useCallback(async () => {
-    const token = localStorage.getItem("token"); // Obtiene el token de autenticación
+    const token = localStorage.getItem("token");
     if (!token) {
-      console.error('Token no encontrado, redirigiendo al login');
+      console.error("Token no encontrado, redirigiendo al login");
       return;
     }
-
+  
     try {
-      const response = await axios.get(`http://localhost:8000/api/events?category=${category}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Incluye el token en el header de la solicitud
-        },
-      });
-      setEvents(response.data); // Actualiza el estado con los eventos obtenidos
+      const response = await axios.get(
+        `http://localhost:8000/api/events?category=${category}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      console.log("Datos recibidos:", response.data);
+  
+      // Verifica y establece los eventos
+      setEvents(response.data.data || []); // Usa "data.data" para acceder a los eventos
     } catch (error) {
-      console.error('Error obteniendo los eventos:', error);
+      console.error("Error obteniendo los eventos:", error);
+      setEvents([]); // Evita errores si no hay datos disponibles
     } finally {
-      setLoading(false); // Desactiva el estado de carga después de la solicitud
+      setLoading(false);
     }
   }, [category]);
 
