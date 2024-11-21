@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getGruposRock } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const GruposRockPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchGruposRock = async (page) => {
+  const fetchGruposRock = useCallback(async (page) => {
     try {
       setLoading(true);
       const response = await getGruposRock(page, 2); // Mostrar 2 grupos por página
@@ -27,11 +27,11 @@ const GruposRockPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]); // Include dependencies like `navigate` here
 
   useEffect(() => {
     fetchGruposRock(currentPage);
-  }, [currentPage]);
+  }, [fetchGruposRock, currentPage]); // Include `fetchGruposRock` as a dependency
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
