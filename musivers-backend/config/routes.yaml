@@ -183,3 +183,9 @@ list_grupos_rock:
     controller: App\Controller\GruposRockController::listGruposRockView
     methods: GET
 
+favicon:
+    path: /favicon.ico
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirect
+    defaults:
+        path: /path/to/favicon.ico
+        permanent: true
