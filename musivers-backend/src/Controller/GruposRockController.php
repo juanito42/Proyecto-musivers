@@ -154,7 +154,7 @@ public function createGrupoRock(Request $request): Response
         ->add('officialWebsite', UrlType::class, ['label' => 'Sitio Oficial', 'required' => false])
         ->add('albums', TextareaType::class, ['label' => 'Álbumes (separados por comas)', 'mapped' => false, 'required' => false])
         ->add('members', TextareaType::class, ['label' => 'Miembros (separados por comas)', 'mapped' => false, 'required' => false])
-        ->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
+        #->add('save', SubmitType::class, ['label' => 'Crear Grupo'])
         ->getForm();
 
     $form->handleRequest($request);

@@ -31,50 +31,40 @@
                         <!-- Campo Nombre -->
                         <div class="mb-3">
                             {{ form_label(form.name, 'Nombre del Grupo', { 'label_attr': { 'class': 'form-label' } }) }}
-                            {{ form_widget(form.name, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Escribe el nombre del grupo'
-                                }
-                            }) }}
+                            {{ form_widget(form.name, { 'attr': { 'class': 'form-control', 'placeholder': 'Escribe el nombre del grupo' } }) }}
                         </div>
 
                         <!-- Campo Biografía -->
                         <div class="mb-3">
                             {{ form_label(form.biography, 'Biografía', { 'label_attr': { 'class': 'form-label' } }) }}
-                            {{ form_widget(form.biography, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Escribe una biografía del grupo'
-                                }
-                            }) }}
+                            {{ form_widget(form.biography, { 'attr': { 'class': 'form-control', 'placeholder': 'Escribe una biografía del grupo' } }) }}
                         </div>
 
                         <!-- Campo Fecha de Formación -->
                         <div class="mb-3">
                             {{ form_label(form.formationDate, 'Fecha de Formación', { 'label_attr': { 'class': 'form-label' } }) }}
-                            {{ form_widget(form.formationDate, {
-                                'attr': {
-                                    'class': 'form-control'
-                                }
-                            }) }}
+                            {{ form_widget(form.formationDate, { 'attr': { 'class': 'form-control' } }) }}
                         </div>
 
                         <!-- Campo Foto -->
                         <div class="mb-3">
                             {{ form_label(form.photo, 'Foto del Grupo', { 'label_attr': { 'class': 'form-label' } }) }}
-                            {{ form_widget(form.photo, {
-                                'attr': {
-                                    'class': 'form-control'
-                                }
-                            }) }}
+                            {{ form_widget(form.photo, { 'attr': { 'class': 'form-control' } }) }}
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Crear Grupo</button>
-                        {{ form_end(form) }}
+                        <!-- Renderizar campos restantes explícitamente -->
+                        {{ form_rest(form) }}
+
+                        <!-- Botón personalizado -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Crear Grupo</button>
+                        </div>
+
+                        {{ form_end(form, { 'render_rest': false }) }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <br>
 {% endblock %}
